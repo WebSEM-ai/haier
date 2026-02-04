@@ -10,12 +10,13 @@ type Args = {
   children: React.ReactNode
 }
 
-const serverFunction: typeof handleServerFunctions = async (args) => {
+const serverFunction = async function (args: Parameters<typeof handleServerFunctions>[0]) {
   'use server'
   return handleServerFunctions(args)
 }
 
 const Layout = ({ children }: Args) => (
+  // @ts-expect-error Server function type mismatch between versions
   <RootLayout config={config} importMap={importMap} serverFunction={serverFunction}>
     {children}
   </RootLayout>
