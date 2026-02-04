@@ -1,6 +1,9 @@
 import { revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
+// Workaround for Next.js 15 type issue
+const doRevalidate = revalidateTag as unknown as (tag: string) => void
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
@@ -16,8 +19,7 @@ export async function POST(req: NextRequest) {
     }
 
     for (const tag of tags) {
-      // @ts-expect-error Next.js 15 revalidateTag type issue
-      revalidateTag(tag)
+      doRevalidate(tag)
     }
 
     return NextResponse.json({ revalidated: true, tags })
