@@ -1,0 +1,15 @@
+{
+  "name": "haier-ro",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "generate:types": "turbo generate:types"
+  },
+  "devDependencies": {
+    "pg": "^8.18.0",
+    "turbo": "^2.8.3"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
