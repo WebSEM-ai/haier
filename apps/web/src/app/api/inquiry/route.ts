@@ -1,7 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Resend } from 'resend'
-
-const resend = new Resend(process.env.RESEND_API_KEY)
 
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'office@example.com'
@@ -51,6 +48,8 @@ export async function POST(req: NextRequest) {
     // 2. Trimite email de notificare (doar dacă Resend e configurat)
     if (process.env.RESEND_API_KEY) {
       try {
+        const { Resend } = await import('resend')
+        const resend = new Resend(process.env.RESEND_API_KEY)
         await resend.emails.send({
           from: 'Haier România <noreply@haier.ro>',
           to: CONTACT_EMAIL,
