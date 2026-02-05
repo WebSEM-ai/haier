@@ -39,12 +39,6 @@ export const Products: CollectionConfig = {
       required: true,
     },
     {
-      name: 'mainImage',
-      label: 'Imagine principală',
-      type: 'upload',
-      relationTo: 'media',
-    },
-    {
       name: 'shortDescription',
       label: 'Descriere scurtă',
       type: 'textarea',

@@ -30,7 +30,6 @@ export default buildConfig({
 
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URL || '' },
-    push: true, // Auto-sync schema changes to database
   }),
 
   plugins: [
