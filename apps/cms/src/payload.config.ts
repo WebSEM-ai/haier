@@ -38,6 +38,7 @@ export default buildConfig({
           s3Storage({
             collections: { media: true },
             bucket: process.env.R2_BUCKET,
+            disableLocalStorage: true,
             config: {
               endpoint: process.env.R2_ENDPOINT,
               credentials: {
@@ -45,7 +46,15 @@ export default buildConfig({
                 secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
               },
               region: 'auto',
+              forcePathStyle: true,
             },
+            ...(process.env.R2_PUBLIC_URL
+              ? {
+                  generateFileURL: ({ filename }) => {
+                    return `${process.env.R2_PUBLIC_URL}/${filename}`
+                  },
+                }
+              : {}),
           }),
         ]
       : []),
