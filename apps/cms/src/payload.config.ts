@@ -33,8 +33,22 @@ export default buildConfig({
   }),
 
   plugins: [
-    // S3 storage temporar dezactivat pentru debugging
-    // TODO: Re-enable after fixing importMap issue
+    ...(process.env.R2_BUCKET
+      ? [
+          s3Storage({
+            collections: { media: true },
+            bucket: process.env.R2_BUCKET,
+            config: {
+              endpoint: process.env.R2_ENDPOINT,
+              credentials: {
+                accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
+                secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+              },
+              region: 'auto',
+            },
+          }),
+        ]
+      : []),
   ],
 
   typescript: {
