@@ -79,11 +79,17 @@ export const Products: CollectionConfig = {
     },
 
     // ══════════════════════════════════════
-    // IMAGINI
+    // IMAGINE PRINCIPALĂ
     // ══════════════════════════════════════
     {
+      name: 'mainImage',
+      label: 'Imagine principală',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
       name: 'images',
-      label: 'Galerie Imagini',
+      label: 'Galerie Imagini (opțional)',
       type: 'array',
       fields: [
         {
@@ -91,7 +97,6 @@ export const Products: CollectionConfig = {
           label: 'Imagine',
           type: 'upload',
           relationTo: 'media',
-          required: true,
         },
         {
           name: 'alt',
@@ -437,17 +442,16 @@ export const Products: CollectionConfig = {
           fields: [
             {
               name: 'features',
-              label: 'Lista funcționalități',
+              label: 'Lista funcționalități (opțional)',
               type: 'array',
               admin: {
-                description: 'Adaugă toate funcțiile produsului',
+                description: 'Adaugă funcțiile produsului',
               },
               fields: [
                 {
                   name: 'feature',
                   label: 'Funcționalitate',
                   type: 'text',
-                  required: true,
                 },
               ],
             },
