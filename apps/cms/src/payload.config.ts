@@ -37,7 +37,14 @@ export default buildConfig({
     ...(process.env.R2_BUCKET
       ? [
           s3Storage({
-            collections: { media: true },
+            collections: {
+              media: {
+                prefix: 'media',
+                generateFileURL: ({ filename }) => {
+                  return `${process.env.R2_PUBLIC_URL}/${filename}`
+                },
+              },
+            },
             bucket: process.env.R2_BUCKET,
             config: {
               endpoint: process.env.R2_ENDPOINT || '',
