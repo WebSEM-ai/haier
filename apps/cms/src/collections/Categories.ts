@@ -8,6 +8,9 @@ export const Categories: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'parent', 'level', 'order'],
   },
+  access: {
+    read: () => true, // Public read access
+  },
   hooks: {
     afterChange: [revalidateCategory],
     afterDelete: [revalidateCategoryDelete],

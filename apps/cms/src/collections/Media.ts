@@ -3,6 +3,9 @@ import type { CollectionConfig } from 'payload'
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: { singular: 'Fișier media', plural: 'Media' },
+  access: {
+    read: () => true, // Public read access
+  },
   upload: {
     mimeTypes: ['image/*', 'application/pdf'],
     imageSizes: [

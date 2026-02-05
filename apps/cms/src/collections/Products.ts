@@ -9,6 +9,9 @@ export const Products: CollectionConfig = {
     defaultColumns: ['title', 'modelCode', 'category', 'coolingCapacity'],
     group: 'Catalog',
   },
+  access: {
+    read: () => true, // Public read access
+  },
   hooks: {
     afterChange: [revalidateProduct],
     afterDelete: [revalidateProductDelete],
