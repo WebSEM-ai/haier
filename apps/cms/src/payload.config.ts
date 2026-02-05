@@ -50,7 +50,7 @@ export default buildConfig({
             },
             ...(process.env.R2_PUBLIC_URL
               ? {
-                  generateFileURL: ({ filename }) => {
+                  generateFileURL: ({ filename }: { filename: string }) => {
                     return `${process.env.R2_PUBLIC_URL}/${filename}`
                   },
                 }
