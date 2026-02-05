@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import path from 'path'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -7,6 +8,7 @@ export const Media: CollectionConfig = {
     read: () => true, // Public read access
   },
   upload: {
+    staticDir: path.resolve(process.cwd(), 'media'),
     mimeTypes: ['image/*', 'application/pdf'],
     imageSizes: [
       { name: 'thumbnail', width: 400, height: 300, position: 'centre' },
