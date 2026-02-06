@@ -2,7 +2,6 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { s3Storage } from '@payloadcms/storage-s3'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import sharp from 'sharp'
 import { Products } from './collections/Products'
@@ -30,7 +29,6 @@ export default buildConfig({
 
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URL || '' },
-    push: true,
   }),
 
   plugins: [],
