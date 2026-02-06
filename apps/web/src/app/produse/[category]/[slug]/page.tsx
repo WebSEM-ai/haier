@@ -39,7 +39,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   // Build image URL from filename + R2 public URL
   const imageUrl = product.mainImageFilename
-    ? `${R2_PUBLIC_URL}/media/${product.mainImageFilename}`
+    ? `${R2_PUBLIC_URL}/${product.mainImageFilename}`
     : null
 
   return (
