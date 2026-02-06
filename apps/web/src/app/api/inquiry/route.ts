@@ -3,6 +3,15 @@ import { NextRequest, NextResponse } from 'next/server'
 const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001'
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'office@example.com'
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 interface InquiryData {
   name: string
   email: string
@@ -56,11 +65,11 @@ export async function POST(req: NextRequest) {
           subject: `Cerere ofertă nouă${data.productTitle ? ` - ${data.productTitle}` : ''}`,
           html: `
             <h2>Cerere ofertă nouă</h2>
-            <p><strong>Nume:</strong> ${data.name}</p>
-            <p><strong>Email:</strong> ${data.email}</p>
-            <p><strong>Telefon:</strong> ${data.phone}</p>
-            ${data.productTitle ? `<p><strong>Produs:</strong> ${data.productTitle}</p>` : ''}
-            ${data.message ? `<p><strong>Mesaj:</strong></p><p>${data.message}</p>` : ''}
+            <p><strong>Nume:</strong> ${escapeHtml(data.name)}</p>
+            <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+            <p><strong>Telefon:</strong> ${escapeHtml(data.phone)}</p>
+            ${data.productTitle ? `<p><strong>Produs:</strong> ${escapeHtml(data.productTitle)}</p>` : ''}
+            ${data.message ? `<p><strong>Mesaj:</strong></p><p>${escapeHtml(data.message)}</p>` : ''}
             <hr>
             <p><small>Această cerere a fost trimisă prin site-ul Haier România.</small></p>
           `,

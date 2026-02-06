@@ -39,77 +39,97 @@ export interface Category {
 }
 
 export async function getProducts(): Promise<Product[]> {
-  const res = await fetch(`${CMS_URL}/api/products?limit=100&sort=order&depth=0`, {
-    next: { tags: ['products'] },
-  })
-  if (!res.ok) return []
-  const data = await res.json()
-  return data.docs
+  try {
+    const res = await fetch(`${CMS_URL}/api/products?limit=100&sort=order&depth=0`, {
+      next: { tags: ['products'] },
+    })
+    if (!res.ok) return []
+    const data = await res.json()
+    return data.docs
+  } catch {
+    return []
+  }
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-  const res = await fetch(
-    `${CMS_URL}/api/products?where[featured][equals]=true&limit=10&sort=order&depth=0`,
-    { next: { tags: ['products'] } }
-  )
-  if (!res.ok) return []
-  const data = await res.json()
-  return data.docs
+  try {
+    const res = await fetch(
+      `${CMS_URL}/api/products?where[featured][equals]=true&limit=10&sort=order&depth=0`,
+      { next: { tags: ['products'] } }
+    )
+    if (!res.ok) return []
+    const data = await res.json()
+    return data.docs
+  } catch {
+    return []
+  }
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const res = await fetch(
-    `${CMS_URL}/api/products?where[slug][equals]=${encodeURIComponent(slug)}&depth=0`,
-    { next: { tags: [`product-${slug}`] } }
-  )
-  if (!res.ok) return null
-  const data = await res.json()
-  return data.docs[0] || null
+  try {
+    const res = await fetch(
+      `${CMS_URL}/api/products?where[slug][equals]=${encodeURIComponent(slug)}&depth=0`,
+      { next: { tags: [`product-${slug}`] } }
+    )
+    if (!res.ok) return null
+    const data = await res.json()
+    return data.docs[0] || null
+  } catch {
+    return null
+  }
 }
 
 export async function getProductsByCategorySlug(categorySlug: string): Promise<Product[]> {
-  const url = `${CMS_URL}/api/products?where[categorySlug][equals]=${encodeURIComponent(categorySlug)}&sort=order&depth=0`
-  console.log('Fetching products from:', url)
-  const res = await fetch(url, {
-    cache: 'no-store' // Disable cache for debugging
-  })
-  console.log('Response status:', res.status)
-  if (!res.ok) {
-    console.log('Fetch failed')
+  try {
+    const res = await fetch(
+      `${CMS_URL}/api/products?where[categorySlug][equals]=${encodeURIComponent(categorySlug)}&sort=order&depth=0`,
+      { next: { tags: ['products'] } }
+    )
+    if (!res.ok) return []
+    const data = await res.json()
+    return data.docs
+  } catch {
     return []
   }
-  const data = await res.json()
-  console.log('Products found:', data.docs?.length || 0)
-  return data.docs
 }
 
 export async function getCategories(): Promise<Category[]> {
-  const res = await fetch(`${CMS_URL}/api/categories?limit=100&sort=order&depth=0`, {
-    next: { tags: ['categories'] },
-  })
-  if (!res.ok) return []
-  const data = await res.json()
-  return data.docs
+  try {
+    const res = await fetch(`${CMS_URL}/api/categories?limit=100&sort=order&depth=0`, {
+      next: { tags: ['categories'] },
+    })
+    if (!res.ok) return []
+    const data = await res.json()
+    return data.docs
+  } catch {
+    return []
+  }
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  const url = `${CMS_URL}/api/categories?where[slug][equals]=${encodeURIComponent(slug)}&depth=0`
-  console.log('Fetching category from:', url)
-  const res = await fetch(url, {
-    cache: 'no-store'
-  })
-  if (!res.ok) return null
-  const data = await res.json()
-  console.log('Category found:', data.docs?.[0]?.name || 'none')
-  return data.docs[0] || null
+  try {
+    const res = await fetch(
+      `${CMS_URL}/api/categories?where[slug][equals]=${encodeURIComponent(slug)}&depth=0`,
+      { next: { tags: [`category-${slug}`] } }
+    )
+    if (!res.ok) return null
+    const data = await res.json()
+    return data.docs[0] || null
+  } catch {
+    return null
+  }
 }
 
 export async function getCategoriesByLevel(level: '1' | '2' | '3'): Promise<Category[]> {
-  const res = await fetch(
-    `${CMS_URL}/api/categories?where[level][equals]=${level}&sort=order&depth=0`,
-    { next: { tags: ['categories'] } }
-  )
-  if (!res.ok) return []
-  const data = await res.json()
-  return data.docs
+  try {
+    const res = await fetch(
+      `${CMS_URL}/api/categories?where[level][equals]=${level}&sort=order&depth=0`,
+      { next: { tags: ['categories'] } }
+    )
+    if (!res.ok) return []
+    const data = await res.json()
+    return data.docs
+  } catch {
+    return []
+  }
 }

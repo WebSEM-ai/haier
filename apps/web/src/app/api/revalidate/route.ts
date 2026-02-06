@@ -1,7 +1,8 @@
 import { revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
-// Workaround for Next.js 15 type issue
+// Next.js 16 changed the signature to require a cache profile as 2nd arg,
+// but the runtime still works with just a tag string.
 const doRevalidate = revalidateTag as unknown as (tag: string) => void
 
 export async function POST(req: NextRequest) {
