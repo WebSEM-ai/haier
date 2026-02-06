@@ -32,17 +32,12 @@ export const Products: CollectionConfig = {
       required: true,
     },
     {
-      name: 'category',
-      label: 'Categorie',
-      type: 'relationship',
-      relationTo: 'categories',
-      required: true,
-    },
-    {
-      name: 'mainImage',
-      label: 'Imagine principală',
-      type: 'upload',
-      relationTo: 'media',
+      name: 'categorySlug',
+      label: 'Categorie (slug)',
+      type: 'text',
+      admin: {
+        description: 'Introdu slug-ul categoriei (ex: climatizare)',
+      },
     },
     {
       name: 'shortDescription',
