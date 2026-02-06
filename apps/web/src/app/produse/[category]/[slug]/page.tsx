@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
 import { InquiryForm } from '@/components/product/InquiryForm'
+import { ProductFeatures } from '@/components/product/ProductFeatures'
+import { ProductSpecs } from '@/components/product/ProductSpecs'
 import { getProductBySlug, getCategoryBySlug } from '@/lib/payload'
 import { R2_PUBLIC_URL } from '@/lib/constants'
 
@@ -189,6 +191,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
           </div>
         </div>
+
+        {/* Secțiunea 1: Caracteristici principale + Clasă energetică */}
+        <ProductFeatures
+          energyClassCooling={product.energyClassCooling}
+          energyClassHeating={product.energyClassHeating}
+        />
+
+        {/* Secțiunea 2: Specificații tehnice universale */}
+        <ProductSpecs />
       </Container>
     </div>
   )

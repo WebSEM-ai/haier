@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { MobileNav } from './MobileNav'
 import type { Category } from '@/lib/payload'
 
@@ -11,6 +12,8 @@ interface HeaderProps {
 
 export function Header({ categories }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
+  const pathname = usePathname()
+  const isHome = pathname === '/'
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,13 +23,15 @@ export function Header({ categories }: HeaderProps) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const headerBg = !isHome
+    ? 'bg-gray-900 shadow-lg shadow-black/10'
+    : isScrolled
+      ? 'bg-gray-900/95 shadow-lg shadow-black/10 backdrop-blur-lg'
+      : 'bg-transparent'
+
   return (
     <header
-      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled
-          ? 'bg-gray-900/95 shadow-lg shadow-black/10 backdrop-blur-lg'
-          : 'bg-transparent'
-      }`}
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${headerBg}`}
     >
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex h-16 items-center justify-between lg:h-20">

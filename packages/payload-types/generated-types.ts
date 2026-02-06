@@ -6,73 +6,16 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
-/**
- * Supported timezones in IANA format.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "supportedTimezones".
- */
-export type SupportedTimezones =
-  | 'Pacific/Midway'
-  | 'Pacific/Niue'
-  | 'Pacific/Honolulu'
-  | 'Pacific/Rarotonga'
-  | 'America/Anchorage'
-  | 'Pacific/Gambier'
-  | 'America/Los_Angeles'
-  | 'America/Tijuana'
-  | 'America/Denver'
-  | 'America/Phoenix'
-  | 'America/Chicago'
-  | 'America/Guatemala'
-  | 'America/New_York'
-  | 'America/Bogota'
-  | 'America/Caracas'
-  | 'America/Santiago'
-  | 'America/Buenos_Aires'
-  | 'America/Sao_Paulo'
-  | 'Atlantic/South_Georgia'
-  | 'Atlantic/Azores'
-  | 'Atlantic/Cape_Verde'
-  | 'Europe/London'
-  | 'Europe/Berlin'
-  | 'Africa/Lagos'
-  | 'Europe/Athens'
-  | 'Africa/Cairo'
-  | 'Europe/Moscow'
-  | 'Asia/Riyadh'
-  | 'Asia/Dubai'
-  | 'Asia/Baku'
-  | 'Asia/Karachi'
-  | 'Asia/Tashkent'
-  | 'Asia/Calcutta'
-  | 'Asia/Dhaka'
-  | 'Asia/Almaty'
-  | 'Asia/Jakarta'
-  | 'Asia/Bangkok'
-  | 'Asia/Shanghai'
-  | 'Asia/Singapore'
-  | 'Asia/Tokyo'
-  | 'Asia/Seoul'
-  | 'Australia/Brisbane'
-  | 'Australia/Sydney'
-  | 'Pacific/Guam'
-  | 'Pacific/Noumea'
-  | 'Pacific/Auckland'
-  | 'Pacific/Fiji';
-
 export interface Config {
   auth: {
     users: UserAuthOperations;
   };
-  blocks: {};
   collections: {
     users: User;
     products: Product;
     categories: Category;
     inquiries: Inquiry;
     media: Media;
-    'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -84,7 +27,6 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -92,7 +34,6 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
   globals: {};
   globalsSelect: {};
   locale: null;
@@ -137,13 +78,6 @@ export interface User {
   hash?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
   password?: string | null;
 }
 /**
@@ -154,51 +88,57 @@ export interface Product {
   id: number;
   title: string;
   slug: string;
+  /**
+   * Ex: Pearl Premium, Revive Plus, etc.
+   */
+  series?: string | null;
+  /**
+   * Ex: AS35PBPHRA-PRE1U35MEPFRA-PRE
+   */
   modelCode: string;
-  category: number | Category;
+  /**
+   * Ex: 3.5 kW, 10 kW mono, etc.
+   */
+  capacity?: string | null;
+  /**
+   * Slug-ul categoriei: climatizare, pompe-caldura, etc.
+   */
+  categorySlug: string;
   shortDescription?: string | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  images?:
-    | {
-        image: number | Media;
-        alt?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  coolingCapacity?: string | null;
-  heatingCapacity?: string | null;
-  energyClass?: string | null;
+  /**
+   * Numele fișierului din Media (ex: pearl-premium.webp)
+   */
+  mainImageFilename?: string | null;
+  coolingCapacityNominal?: string | null;
+  coolingCapacityRange?: string | null;
+  coolingPowerConsumption?: string | null;
+  coolingPowerRange?: string | null;
+  seer?: string | null;
+  eer?: string | null;
+  energyClassCooling?: ('A+++' | 'A++' | 'A+' | 'A' | 'B' | 'C' | 'D') | null;
+  heatingCapacityNominal?: string | null;
+  heatingCapacityRange?: string | null;
+  heatingPowerConsumption?: string | null;
+  heatingPowerRange?: string | null;
+  scop?: string | null;
+  cop?: string | null;
+  energyClassHeating?: ('A+++' | 'A++' | 'A+' | 'A' | 'B' | 'C' | 'D') | null;
+  indoorDimensions?: string | null;
+  indoorWeight?: string | null;
+  indoorNoiseMax?: string | null;
+  indoorNoiseLevels?: string | null;
+  outdoorDimensions?: string | null;
+  outdoorWeight?: string | null;
+  outdoorNoiseMax?: string | null;
+  compressorType?: string | null;
   refrigerant?: string | null;
-  wifi?: string | null;
-  noiseLevel?: string | null;
-  airFiltration?: string | null;
-  hygieneFunctions?: string | null;
-  presenceSensor?: string | null;
-  color?: string | null;
-  dimensions?: string | null;
-  weight?: string | null;
+  powerSupply?: string | null;
   warranty?: string | null;
-  documents?:
-    | {
-        file?: (number | null) | Media;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
+  madeIn?: string | null;
+  /**
+   * Funcții cheie separate prin virgulă
+   */
+  featureHighlights?: string | null;
   featured?: boolean | null;
   order?: number | null;
   updatedAt: string;
@@ -279,23 +219,6 @@ export interface Inquiry {
   status?: ('new' | 'contacted' | 'completed') | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-kv".
- */
-export interface PayloadKv {
-  id: number;
-  key: string;
-  data:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -380,13 +303,6 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -395,37 +311,39 @@ export interface UsersSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  series?: T;
   modelCode?: T;
-  category?: T;
+  capacity?: T;
+  categorySlug?: T;
   shortDescription?: T;
-  description?: T;
-  images?:
-    | T
-    | {
-        image?: T;
-        alt?: T;
-        id?: T;
-      };
-  coolingCapacity?: T;
-  heatingCapacity?: T;
-  energyClass?: T;
+  mainImageFilename?: T;
+  coolingCapacityNominal?: T;
+  coolingCapacityRange?: T;
+  coolingPowerConsumption?: T;
+  coolingPowerRange?: T;
+  seer?: T;
+  eer?: T;
+  energyClassCooling?: T;
+  heatingCapacityNominal?: T;
+  heatingCapacityRange?: T;
+  heatingPowerConsumption?: T;
+  heatingPowerRange?: T;
+  scop?: T;
+  cop?: T;
+  energyClassHeating?: T;
+  indoorDimensions?: T;
+  indoorWeight?: T;
+  indoorNoiseMax?: T;
+  indoorNoiseLevels?: T;
+  outdoorDimensions?: T;
+  outdoorWeight?: T;
+  outdoorNoiseMax?: T;
+  compressorType?: T;
   refrigerant?: T;
-  wifi?: T;
-  noiseLevel?: T;
-  airFiltration?: T;
-  hygieneFunctions?: T;
-  presenceSensor?: T;
-  color?: T;
-  dimensions?: T;
-  weight?: T;
+  powerSupply?: T;
   warranty?: T;
-  documents?:
-    | T
-    | {
-        file?: T;
-        label?: T;
-        id?: T;
-      };
+  madeIn?: T;
+  featureHighlights?: T;
   featured?: T;
   order?: T;
   updatedAt?: T;
@@ -514,14 +432,6 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-kv_select".
- */
-export interface PayloadKvSelect<T extends boolean = true> {
-  key?: T;
-  data?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -560,7 +470,7 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-// Module augmentation removed for web compatibility
-// declare module 'payload' {
-//   export interface GeneratedTypes extends Config {}
-// }
+
+declare module 'payload' {
+  export interface GeneratedTypes extends Config {}
+}
