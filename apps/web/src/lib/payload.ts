@@ -23,6 +23,8 @@ export interface Product {
   featureHighlights?: string | null
   featured?: boolean
   order?: number
+  updatedAt: string
+  createdAt: string
 }
 
 export interface Category {
@@ -32,6 +34,8 @@ export interface Category {
   level: string
   description?: string | null
   order?: number
+  updatedAt: string
+  createdAt: string
 }
 
 export async function getProducts(): Promise<Product[]> {
