@@ -24,7 +24,7 @@ interface ProductCardProps {
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const categorySlug = product.categorySlug || 'produse'
   const imageUrl = product.mainImageFilename
-    ? `${R2_PUBLIC_URL}/${product.mainImageFilename}`
+    ? `${R2_PUBLIC_URL}/media/${product.mainImageFilename}`
     : null
 
   return (

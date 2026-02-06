@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import * as Dialog from '@radix-ui/react-dialog'
-import type { Category } from '@repo/payload-types'
+import type { Category } from '@/lib/payload'
 
 interface MobileNavProps {
   categories: Category[]

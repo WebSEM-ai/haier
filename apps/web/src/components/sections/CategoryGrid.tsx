@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Container } from '@/components/ui/Container'
 import type { Category } from '@/lib/payload'
@@ -50,8 +49,6 @@ export function CategoryGrid({ categories, showTitle = true }: CategoryGridProps
 
         <div className={`${showTitle ? 'mt-12' : ''} grid gap-6 sm:grid-cols-2 lg:grid-cols-3`}>
           {rootCategories.map((category, index) => {
-            const imageData = typeof category.image === 'object' ? category.image : null
-            const imageUrl = imageData?.url || null
             const icon = categoryIcons[category.slug || ''] || categoryIcons.default
 
             return (
@@ -66,19 +63,6 @@ export function CategoryGrid({ categories, showTitle = true }: CategoryGridProps
                   href={`/produse/${category.slug}`}
                   className="group relative block overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 to-gray-800 p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-sky-500/10"
                 >
-                  {/* Background image */}
-                  {imageUrl && (
-                    <div className="absolute inset-0">
-                      <Image
-                        src={imageUrl}
-                        alt={category.name}
-                        fill
-                        className="object-cover opacity-30 transition-all duration-500 group-hover:scale-110 group-hover:opacity-40"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-gray-900/40" />
-                    </div>
-                  )}
-
                   {/* Content */}
                   <div className="relative z-10 flex h-full min-h-[200px] flex-col justify-between">
                     <div>

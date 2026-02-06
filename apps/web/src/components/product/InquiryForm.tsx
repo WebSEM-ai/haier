@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/Button'
-import type { Product } from '@repo/payload-types'
+import type { Product } from '@/lib/payload'
 
 interface InquiryFormProps {
   product?: Product | null

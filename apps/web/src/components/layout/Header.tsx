@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Container } from '@/components/ui/Container'
 import { MegaMenu } from './MegaMenu'
 import { MobileNav } from './MobileNav'
-import type { Category } from '@repo/payload-types'
+import type { Category } from '@/lib/payload'
 
 interface HeaderProps {
   categories: Category[]

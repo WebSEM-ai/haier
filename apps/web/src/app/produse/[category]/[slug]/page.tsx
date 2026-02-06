@@ -6,6 +6,7 @@ import { Container } from '@/components/ui/Container'
 import { Badge } from '@/components/ui/Badge'
 import { InquiryForm } from '@/components/product/InquiryForm'
 import { getProductBySlug, getCategoryBySlug } from '@/lib/payload'
+import { R2_PUBLIC_URL } from '@/lib/constants'
 
 interface ProductPageProps {
   params: Promise<{ category: string; slug: string }>
@@ -33,10 +34,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound()
   }
 
-  const category = typeof product.category === 'object' ? product.category : null
-  const firstImage = product.images?.[0]
-  const imageData = firstImage?.image
-  const imageUrl = typeof imageData === 'object' && imageData?.url ? imageData.url : null
+  // Fetch category separately using the categorySlug from product
+  const category = product.categorySlug ? await getCategoryBySlug(product.categorySlug) : null
+
+  // Build image URL from filename + R2 public URL
+  const imageUrl = product.mainImageFilename
+    ? `${R2_PUBLIC_URL}/media/${product.mainImageFilename}`
+    : null
 
   return (
     <div className="py-12">
@@ -73,7 +77,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               {imageUrl ? (
                 <Image
                   src={imageUrl}
-                  alt={firstImage?.alt || product.title}
+                  alt={product.title}
                   width={800}
                   height={800}
                   className="h-full w-full object-cover"
@@ -87,34 +91,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </div>
               )}
             </div>
-
-            {/* Thumbnails */}
-            {product.images && product.images.length > 1 && (
-              <div className="mt-4 grid grid-cols-4 gap-4">
-                {product.images.slice(0, 4).map((img, i) => {
-                  const thumb = typeof img.image === 'object' && img.image?.url ? img.image.url : null
-                  return thumb ? (
-                    <div key={i} className="aspect-square overflow-hidden rounded-lg bg-gray-100">
-                      <Image
-                        src={thumb}
-                        alt={img.alt || `${product.title} - ${i + 1}`}
-                        width={200}
-                        height={200}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  ) : null
-                })}
-              </div>
-            )}
           </div>
 
           {/* Info produs */}
           <div>
             <div className="mb-4 flex flex-wrap gap-2">
-              {product.energyClass && <Badge variant="success">{product.energyClass}</Badge>}
-              {product.wifi && <Badge variant="info">Wi-Fi</Badge>}
-              {product.noiseLevel && <Badge variant="default">{product.noiseLevel}</Badge>}
+              {product.energyClassCooling && <Badge variant="success">Răcire: {product.energyClassCooling}</Badge>}
+              {product.energyClassHeating && <Badge variant="info">Încălzire: {product.energyClassHeating}</Badge>}
+              {product.series && <Badge variant="default">{product.series}</Badge>}
             </div>
 
             <h1 className="text-3xl font-bold text-gray-900">{product.title}</h1>
@@ -128,16 +112,28 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div className="mt-8 space-y-4">
               <h2 className="text-lg font-semibold text-gray-900">Specificații principale</h2>
               <dl className="grid grid-cols-2 gap-4">
-                {product.coolingCapacity && (
+                {product.coolingCapacityNominal && (
                   <div className="rounded-lg bg-gray-50 p-4">
                     <dt className="text-sm text-gray-500">Putere răcire</dt>
-                    <dd className="mt-1 font-semibold text-gray-900">{product.coolingCapacity}</dd>
+                    <dd className="mt-1 font-semibold text-gray-900">{product.coolingCapacityNominal}</dd>
                   </div>
                 )}
-                {product.heatingCapacity && (
+                {product.heatingCapacityNominal && (
                   <div className="rounded-lg bg-gray-50 p-4">
                     <dt className="text-sm text-gray-500">Putere încălzire</dt>
-                    <dd className="mt-1 font-semibold text-gray-900">{product.heatingCapacity}</dd>
+                    <dd className="mt-1 font-semibold text-gray-900">{product.heatingCapacityNominal}</dd>
+                  </div>
+                )}
+                {product.seer && (
+                  <div className="rounded-lg bg-gray-50 p-4">
+                    <dt className="text-sm text-gray-500">SEER</dt>
+                    <dd className="mt-1 font-semibold text-gray-900">{product.seer}</dd>
+                  </div>
+                )}
+                {product.scop && (
+                  <div className="rounded-lg bg-gray-50 p-4">
+                    <dt className="text-sm text-gray-500">SCOP</dt>
+                    <dd className="mt-1 font-semibold text-gray-900">{product.scop}</dd>
                   </div>
                 )}
                 {product.refrigerant && (
@@ -154,6 +150,35 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 )}
               </dl>
             </div>
+
+            {/* Dimensiuni */}
+            {(product.indoorDimensions || product.outdoorDimensions) && (
+              <div className="mt-8 space-y-4">
+                <h2 className="text-lg font-semibold text-gray-900">Dimensiuni</h2>
+                <dl className="grid grid-cols-2 gap-4">
+                  {product.indoorDimensions && (
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <dt className="text-sm text-gray-500">Unitate interioară</dt>
+                      <dd className="mt-1 font-semibold text-gray-900">{product.indoorDimensions}</dd>
+                    </div>
+                  )}
+                  {product.outdoorDimensions && (
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <dt className="text-sm text-gray-500">Unitate exterioară</dt>
+                      <dd className="mt-1 font-semibold text-gray-900">{product.outdoorDimensions}</dd>
+                    </div>
+                  )}
+                </dl>
+              </div>
+            )}
+
+            {/* Feature highlights */}
+            {product.featureHighlights && (
+              <div className="mt-8">
+                <h2 className="text-lg font-semibold text-gray-900 mb-3">Caracteristici</h2>
+                <p className="text-gray-600">{product.featureHighlights}</p>
+              </div>
+            )}
 
             {/* Formular cerere ofertă */}
             <div className="mt-10 rounded-2xl border border-gray-200 bg-white p-6">
