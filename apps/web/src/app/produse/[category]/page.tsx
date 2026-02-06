@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
-import { ProductCard } from '@/components/product/ProductCard'
+import { CategoryProductGrid } from '@/components/product/CategoryProductGrid'
 import { getCategoryBySlug, getProductsByCategorySlug } from '@/lib/payload'
 
 interface CategoryPageProps {
@@ -65,18 +65,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           )}
         </div>
 
-        {/* Produse */}
+        {/* Produse cu filtre */}
         {products.length > 0 ? (
-          <div>
-            <h2 className="mb-6 text-xl font-semibold text-gray-900">
-              Produse ({products.length})
-            </h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {products.map((product, index) => (
-                <ProductCard key={product.id} product={product} index={index} />
-              ))}
-            </div>
-          </div>
+          <CategoryProductGrid products={products} />
         ) : (
           <p className="text-gray-600">
             Nu există produse în această categorie momentan.
