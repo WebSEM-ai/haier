@@ -68,12 +68,18 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 }
 
 export async function getProductsByCategorySlug(categorySlug: string): Promise<Product[]> {
-  const res = await fetch(
-    `${CMS_URL}/api/products?where[categorySlug][equals]=${encodeURIComponent(categorySlug)}&sort=order&depth=0`,
-    { next: { tags: ['products'] } }
-  )
-  if (!res.ok) return []
+  const url = `${CMS_URL}/api/products?where[categorySlug][equals]=${encodeURIComponent(categorySlug)}&sort=order&depth=0`
+  console.log('Fetching products from:', url)
+  const res = await fetch(url, {
+    cache: 'no-store' // Disable cache for debugging
+  })
+  console.log('Response status:', res.status)
+  if (!res.ok) {
+    console.log('Fetch failed')
+    return []
+  }
   const data = await res.json()
+  console.log('Products found:', data.docs?.length || 0)
   return data.docs
 }
 
@@ -87,12 +93,14 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  const res = await fetch(
-    `${CMS_URL}/api/categories?where[slug][equals]=${encodeURIComponent(slug)}&depth=0`,
-    { next: { tags: ['categories'] } }
-  )
+  const url = `${CMS_URL}/api/categories?where[slug][equals]=${encodeURIComponent(slug)}&depth=0`
+  console.log('Fetching category from:', url)
+  const res = await fetch(url, {
+    cache: 'no-store'
+  })
   if (!res.ok) return null
   const data = await res.json()
+  console.log('Category found:', data.docs?.[0]?.name || 'none')
   return data.docs[0] || null
 }
 
