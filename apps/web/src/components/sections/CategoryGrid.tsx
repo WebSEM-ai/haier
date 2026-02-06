@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Container } from '@/components/ui/Container'
-import type { Category } from '@repo/payload-types'
+import type { Category } from '@/lib/payload'
 
 interface CategoryGridProps {
   categories: Category[]

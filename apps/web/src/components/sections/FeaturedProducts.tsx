@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Container } from '@/components/ui/Container'
 import { ProductCard } from '@/components/product/ProductCard'
-import type { Product } from '@repo/payload-types'
+import type { Product } from '@/lib/payload'
 
 interface FeaturedProductsProps {
   products: Product[]
