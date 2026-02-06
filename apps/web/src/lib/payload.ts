@@ -31,7 +31,7 @@ export interface Category {
   id: number
   name: string
   slug: string
-  level: string
+  level: '1' | '2' | '3'
   description?: string | null
   order?: number
   updatedAt: string
