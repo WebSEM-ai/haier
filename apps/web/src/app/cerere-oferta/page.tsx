@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function CerereOfertaPage() {
   return (
-    <div className="py-12 lg:py-20">
+    <div className="pt-28 pb-12 lg:pb-20">
       <Container size="sm">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">

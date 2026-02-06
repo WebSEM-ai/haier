@@ -12,7 +12,7 @@ export default async function ProdusePage() {
   const categories = await getCategories()
 
   return (
-    <div className="py-12">
+    <div className="pt-28 pb-12">
       <Container>
         <div className="mb-12">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">

@@ -34,7 +34,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const products = await getProductsByCategorySlug(slug)
 
   return (
-    <div className="py-12">
+    <div className="pt-28 pb-12">
       <Container>
         {/* Breadcrumb */}
         <nav className="mb-8">

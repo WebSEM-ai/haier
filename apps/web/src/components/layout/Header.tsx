@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Container } from '@/components/ui/Container'
-import { MegaMenu } from './MegaMenu'
 import { MobileNav } from './MobileNav'
 import type { Category } from '@/lib/payload'
 
@@ -24,55 +21,87 @@ export function Header({ categories }: HeaderProps) {
   }, [])
 
   return (
-    <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+    <header
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
         isScrolled
           ? 'bg-gray-900/95 shadow-lg shadow-black/10 backdrop-blur-lg'
-          : 'bg-gray-900'
+          : 'bg-transparent'
       }`}
     >
-      <Container>
+      <div className="container mx-auto px-4 lg:px-8">
         <div className="flex h-16 items-center justify-between lg:h-20">
           {/* Logo */}
-          <Link href="/" className="group flex items-center space-x-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-600 font-bold text-white transition-transform group-hover:scale-105">
-              H
-            </div>
-            <div className="flex flex-col">
-              <span className="text-lg font-bold text-white">Haier</span>
-              <span className="text-[10px] uppercase tracking-widest text-gray-400">România</span>
-            </div>
+          <Link href="/" className="shrink-0">
+            <span className="text-2xl font-bold tracking-tight text-white lg:text-3xl">
+              Haier
+            </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex lg:items-center lg:space-x-1">
-            <MegaMenu categories={categories} />
-            <Link
-              href="/contact"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
-            >
+          {/* Desktop Navigation — center */}
+          <nav className="hidden items-center gap-1 lg:flex">
+            <NavLink href="/produse/climatizare" hasDropdown>
+              Climatizare
+            </NavLink>
+            <NavLink href="/produse/pompe-caldura">
+              Pompe de căldură
+            </NavLink>
+            <NavSeparator />
+            <NavLink href="/produse">
+              Produse
+            </NavLink>
+            <NavLink href="/contact">
               Contact
-            </Link>
+            </NavLink>
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden lg:block">
+          {/* Right side — CTA */}
+          <div className="hidden items-center gap-4 lg:flex">
             <Link
               href="/cerere-oferta"
-              className="group relative overflow-hidden rounded-xl bg-sky-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sky-600/25 transition-all hover:bg-sky-500 hover:shadow-xl hover:shadow-sky-500/30"
+              className="rounded-full border border-white/80 px-6 py-2 text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-white hover:text-gray-900"
             >
-              <span className="relative z-10">Cere ofertă</span>
-              <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
+              Cere ofertă
             </Link>
           </div>
 
-          {/* Mobile Navigation */}
+          {/* Mobile */}
           <MobileNav categories={categories} />
         </div>
-      </Container>
-    </motion.header>
+      </div>
+    </header>
   )
+}
+
+function NavLink({
+  href,
+  children,
+  hasDropdown,
+}: {
+  href: string
+  children: React.ReactNode
+  hasDropdown?: boolean
+}) {
+  return (
+    <Link
+      href={href}
+      className="group flex items-center gap-1 px-4 py-2 text-[13px] font-medium uppercase tracking-wider text-gray-300 transition-colors hover:text-white"
+    >
+      {children}
+      {hasDropdown && (
+        <svg
+          className="h-3 w-3 opacity-60 transition-transform group-hover:opacity-100"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2.5}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      )}
+    </Link>
+  )
+}
+
+function NavSeparator() {
+  return <div className="mx-2 h-4 w-px bg-white/20" />
 }
