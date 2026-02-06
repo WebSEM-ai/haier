@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Container } from '@/components/ui/Container'
 import { ProductCard } from '@/components/product/ProductCard'
-import { getCategoryBySlug, getSubcategories, getProductsByCategory } from '@/lib/payload'
+import { getCategoryBySlug, getProductsByCategorySlug } from '@/lib/payload'
 
 interface CategoryPageProps {
   params: Promise<{ category: string }>
@@ -31,10 +31,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     notFound()
   }
 
-  const [subcategories, products] = await Promise.all([
-    getSubcategories(category.id),
-    getProductsByCategory(category.id),
-  ])
+  const products = await getProductsByCategorySlug(slug)
 
   return (
     <div className="py-12">
@@ -68,29 +65,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           )}
         </div>
 
-        {/* Subcategorii (dacă există) */}
-        {subcategories.length > 0 && (
-          <div className="mb-16">
-            <h2 className="mb-6 text-xl font-semibold text-gray-900">Subcategorii</h2>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {subcategories.map((sub) => (
-                <Link
-                  key={sub.id}
-                  href={`/produse/${slug}/${sub.slug}`}
-                  className="rounded-xl bg-gray-100 p-6 transition-colors hover:bg-gray-200"
-                >
-                  <h3 className="font-semibold text-gray-900">{sub.name}</h3>
-                  {sub.description && (
-                    <p className="mt-2 text-sm text-gray-600 line-clamp-2">
-                      {sub.description}
-                    </p>
-                  )}
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Produse */}
         {products.length > 0 ? (
           <div>
@@ -98,16 +72,16 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               Produse ({products.length})
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+              {products.map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
               ))}
             </div>
           </div>
-        ) : subcategories.length === 0 ? (
+        ) : (
           <p className="text-gray-600">
             Nu există produse în această categorie momentan.
           </p>
-        ) : null}
+        )}
       </Container>
     </div>
   )

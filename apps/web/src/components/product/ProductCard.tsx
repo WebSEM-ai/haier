@@ -4,21 +4,28 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/Badge'
-import type { Product, Category } from '@repo/payload-types'
+import { R2_PUBLIC_URL } from '@/lib/constants'
 
 interface ProductCardProps {
-  product: Product
+  product: {
+    id: number
+    title: string
+    slug: string
+    modelCode: string
+    categorySlug?: string | null
+    mainImageFilename?: string | null
+    shortDescription?: string | null
+    energyClassCooling?: string | null
+    series?: string | null
+  }
   index?: number
 }
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
-  const category = typeof product.category === 'object' ? product.category : null
-  const categorySlug = category?.slug || 'produse'
-
-  const firstImage = product.images?.[0]
-  const imageData = firstImage?.image
-  const imageUrl =
-    typeof imageData === 'object' && imageData?.url ? imageData.url : null
+  const categorySlug = product.categorySlug || 'produse'
+  const imageUrl = product.mainImageFilename
+    ? `${R2_PUBLIC_URL}/${product.mainImageFilename}`
+    : null
 
   return (
     <motion.div
@@ -36,7 +43,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           {imageUrl ? (
             <Image
               src={imageUrl}
-              alt={firstImage?.alt || product.title}
+              alt={product.title}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
             />
@@ -62,19 +69,14 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         {/* Content */}
         <div className="p-5">
           <div className="mb-3 flex flex-wrap gap-2">
-            {product.energyClass && (
+            {product.energyClassCooling && (
               <Badge variant="success" className="text-xs">
-                {product.energyClass}
+                {product.energyClassCooling}
               </Badge>
             )}
-            {product.wifi && (
+            {product.series && (
               <Badge variant="info" className="text-xs">
-                Wi-Fi
-              </Badge>
-            )}
-            {product.noiseLevel && (
-              <Badge variant="default" className="text-xs">
-                {product.noiseLevel}
+                {product.series}
               </Badge>
             )}
           </div>
