@@ -264,8 +264,6 @@ export function ProductSpecs() {
           <div
             key={index}
             className="relative cursor-pointer"
-            onMouseEnter={() => setActiveIndex(index)}
-            onMouseLeave={() => setActiveIndex(null)}
             onClick={() =>
               setActiveIndex(activeIndex === index ? null : index)
             }
@@ -274,7 +272,7 @@ export function ProductSpecs() {
               className={`rounded-xl p-4 transition-all duration-300 ${
                 activeIndex === index
                   ? 'bg-sky-800 text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-900 hover:shadow-md'
+                  : 'bg-gray-100 text-gray-900'
               }`}
             >
               <div className="flex items-center gap-2.5">
