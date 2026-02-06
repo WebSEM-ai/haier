@@ -33,33 +33,7 @@ export default buildConfig({
     push: true,
   }),
 
-  plugins: [
-    ...(process.env.R2_BUCKET
-      ? [
-          s3Storage({
-            collections: { media: true },
-            bucket: process.env.R2_BUCKET,
-            disableLocalStorage: true,
-            config: {
-              endpoint: process.env.R2_ENDPOINT,
-              credentials: {
-                accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
-                secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
-              },
-              region: 'auto',
-              forcePathStyle: true,
-            },
-            ...(process.env.R2_PUBLIC_URL
-              ? {
-                  generateFileURL: ({ filename }: { filename: string }) => {
-                    return `${process.env.R2_PUBLIC_URL}/${filename}`
-                  },
-                }
-              : {}),
-          }),
-        ]
-      : []),
-  ],
+  plugins: [],
 
   typescript: {
     outputFile: path.resolve(dirname, '../../../packages/payload-types/generated-types.ts'),
