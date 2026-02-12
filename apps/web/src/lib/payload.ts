@@ -10,16 +10,38 @@ export interface Product {
   shortDescription?: string | null
   series?: string | null
   capacity?: string | null
-  energyClassCooling?: string | null
-  energyClassHeating?: string | null
+  // Cooling
   coolingCapacityNominal?: string | null
-  heatingCapacityNominal?: string | null
+  coolingCapacityRange?: string | null
+  coolingPowerConsumption?: string | null
+  coolingPowerRange?: string | null
   seer?: string | null
+  eer?: string | null
+  energyClassCooling?: string | null
+  // Heating
+  heatingCapacityNominal?: string | null
+  heatingCapacityRange?: string | null
+  heatingPowerConsumption?: string | null
+  heatingPowerRange?: string | null
   scop?: string | null
+  cop?: string | null
+  energyClassHeating?: string | null
+  // Indoor unit
   indoorDimensions?: string | null
+  indoorWeight?: string | null
+  indoorNoiseMax?: string | null
+  indoorNoiseLevels?: string | null
+  // Outdoor unit
   outdoorDimensions?: string | null
+  outdoorWeight?: string | null
+  outdoorNoiseMax?: string | null
+  compressorType?: string | null
+  // General
   refrigerant?: string | null
+  powerSupply?: string | null
   warranty?: string | null
+  madeIn?: string | null
+  // Features
   featureHighlights?: string | null
   featured?: boolean
   order?: number
