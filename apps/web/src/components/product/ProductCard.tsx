@@ -39,13 +39,13 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         className="group block overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-100 transition-all duration-300 hover:shadow-xl hover:ring-sky-100"
       >
         {/* Image */}
-        <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="relative aspect-[16/9] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
           {imageUrl ? (
             <Image
               src={imageUrl}
               alt={product.title}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              className="object-contain p-4 transition-transform duration-500 group-hover:scale-110"
             />
           ) : (
             <div className="flex h-full items-center justify-center">
