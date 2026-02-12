@@ -8,6 +8,7 @@ import { SpecsTabs, type SpecSection } from '@/components/product/SpecsTabs'
 import { ProductFeatures } from '@/components/product/ProductFeatures'
 import { TechnologyTabs } from '@/components/product/TechnologyTabs'
 import { ProductSpecs } from '@/components/product/ProductSpecs'
+import { HeatPumpFeatures } from '@/components/product/HeatPumpFeatures'
 import { getProductBySlug, getCategoryBySlug, type Product } from '@/lib/payload'
 import { R2_PUBLIC_URL } from '@/lib/constants'
 
@@ -281,15 +282,28 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <p className="mt-1 text-sm text-gray-400">Cod: {product.modelCode}</p>
 
             {/* Energy labels */}
-            {(product.energyClassCooling || product.energyClassHeating) && (
-              <div className="mt-4 flex flex-wrap gap-3">
-                {product.energyClassCooling && (
-                  <EnergyLabel type="cooling" value={product.energyClassCooling} />
-                )}
-                {product.energyClassHeating && (
-                  <EnergyLabel type="heating" value={product.energyClassHeating} />
-                )}
-              </div>
+            {isHeatPump ? (
+              (product.energyClassHeating35 || product.energyClassHeating55) && (
+                <div className="mt-4 flex flex-wrap gap-3">
+                  {product.energyClassHeating35 && (
+                    <EnergyLabel type="heating" value={`${product.energyClassHeating35} @35°C`} />
+                  )}
+                  {product.energyClassHeating55 && (
+                    <EnergyLabel type="heating" value={`${product.energyClassHeating55} @55°C`} />
+                  )}
+                </div>
+              )
+            ) : (
+              (product.energyClassCooling || product.energyClassHeating) && (
+                <div className="mt-4 flex flex-wrap gap-3">
+                  {product.energyClassCooling && (
+                    <EnergyLabel type="cooling" value={product.energyClassCooling} />
+                  )}
+                  {product.energyClassHeating && (
+                    <EnergyLabel type="heating" value={product.energyClassHeating} />
+                  )}
+                </div>
+              )
             )}
 
             {product.shortDescription && (
@@ -308,27 +322,29 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </dl>
             )}
 
-            {/* Feature icons */}
-            <div className="mt-6 flex flex-wrap gap-2.5">
-              {[
-                { icon: '/images/descriere/ikona-1@2.webp', title: 'R32' },
-                { icon: '/images/descriere/ikona-sterowanie-wifi-80x80-1.webp', title: 'Wi-Fi' },
-                { icon: '/images/descriere/ikona-8@2.webp', title: 'Senzor ECO' },
-                { icon: '/images/descriere/ikona-3@2.webp', title: 'Self Clean' },
-                { icon: '/images/descriere/ikona-10@2.webp', title: 'Somn' },
-                { icon: '/images/descriere/ikona-precyzyjna-nastawa-temperatur-80x80-1.webp', title: '0.5°C' },
-                { icon: '/images/descriere/ikona-13@2.webp', title: '56°C' },
-                { icon: '/images/descriere/ikona-12@2.webp', title: 'Filtrare' },
-              ].map((f) => (
-                <div
-                  key={f.title}
-                  className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-50 ring-1 ring-gray-100"
-                  title={f.title}
-                >
-                  <Image src={f.icon} alt={f.title} width={24} height={24} className="h-6 w-6 object-contain" />
-                </div>
-              ))}
-            </div>
+            {/* Feature icons — only for AC products */}
+            {!isHeatPump && (
+              <div className="mt-6 flex flex-wrap gap-2.5">
+                {[
+                  { icon: '/images/descriere/ikona-1@2.webp', title: 'R32' },
+                  { icon: '/images/descriere/ikona-sterowanie-wifi-80x80-1.webp', title: 'Wi-Fi' },
+                  { icon: '/images/descriere/ikona-8@2.webp', title: 'Senzor ECO' },
+                  { icon: '/images/descriere/ikona-3@2.webp', title: 'Self Clean' },
+                  { icon: '/images/descriere/ikona-10@2.webp', title: 'Somn' },
+                  { icon: '/images/descriere/ikona-precyzyjna-nastawa-temperatur-80x80-1.webp', title: '0.5°C' },
+                  { icon: '/images/descriere/ikona-13@2.webp', title: '56°C' },
+                  { icon: '/images/descriere/ikona-12@2.webp', title: 'Filtrare' },
+                ].map((f) => (
+                  <div
+                    key={f.title}
+                    className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-50 ring-1 ring-gray-100"
+                    title={f.title}
+                  >
+                    <Image src={f.icon} alt={f.title} width={24} height={24} className="h-6 w-6 object-contain" />
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* CTA */}
             <div className="mt-8">
@@ -347,10 +363,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </section>
         )}
 
-        {/* Marketing sections */}
-        <TechnologyTabs />
-        <ProductFeatures />
-        <ProductSpecs />
+        {/* Marketing sections — different for AC vs heat pump */}
+        {isHeatPump ? (
+          <HeatPumpFeatures />
+        ) : (
+          <>
+            <TechnologyTabs />
+            <ProductFeatures />
+            <ProductSpecs />
+          </>
+        )}
       </Container>
     </div>
   )
