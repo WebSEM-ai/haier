@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Container } from '@/components/ui/Container'
 import { InquiryDialog } from '@/components/product/InquiryDialog'
+import { SpecsTabs, type SpecSection } from '@/components/product/SpecsTabs'
 import { ProductFeatures } from '@/components/product/ProductFeatures'
 import { TechnologyTabs } from '@/components/product/TechnologyTabs'
 import { ProductSpecs } from '@/components/product/ProductSpecs'
@@ -44,16 +45,10 @@ function EnergyLabel({ type, value }: { type: 'cooling' | 'heating'; value: stri
   )
 }
 
-/* ─── Spec row helper ─── */
+/* ─── Build spec sections for tabs ─── */
 
-interface SpecRow {
-  label: string
-  value: string | null | undefined
-  unit?: string
-}
-
-function buildSpecSections(product: Product) {
-  const sections: { title: string; rows: SpecRow[] }[] = [
+function buildSpecSections(product: Product): SpecSection[] {
+  const raw: { title: string; rows: { label: string; value: string | null | undefined }[] }[] = [
     {
       title: 'Răcire',
       rows: [
@@ -107,11 +102,10 @@ function buildSpecSections(product: Product) {
     },
   ]
 
-  // Only return sections that have at least one value
-  return sections
+  return raw
     .map((s) => ({
-      ...s,
-      rows: s.rows.filter((r) => r.value),
+      title: s.title,
+      rows: s.rows.filter((r): r is { label: string; value: string } => !!r.value),
     }))
     .filter((s) => s.rows.length > 0)
 }
@@ -281,64 +275,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
 
-        {/* ═══ Specifications Accordion ═══ */}
+        {/* ═══ Specifications Tabs + Search ═══ */}
         {specSections.length > 0 && (
           <section className="mt-16">
             <h2 className="mb-6 text-xl font-bold uppercase tracking-wide text-gray-900">
               Specificații tehnice
             </h2>
-            <div className="divide-y divide-gray-200 rounded-xl border border-gray-200">
-              {specSections.map((section, idx) => (
-                <details key={section.title} className="group" open={idx === 0}>
-                  <summary className="flex cursor-pointer items-center justify-between px-5 py-4 transition-colors hover:bg-gray-50">
-                    <span className="text-sm font-bold uppercase tracking-wider text-gray-700">
-                      {section.title}
-                    </span>
-                    <svg
-                      className="h-5 w-5 shrink-0 text-gray-400 transition-transform group-open:rotate-45"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                  </summary>
-                  <div className="border-t border-gray-100 bg-gray-50/50 px-5 pb-1">
-                    <dl className="divide-y divide-gray-100">
-                      {section.rows.map((row) => (
-                        <div
-                          key={row.label}
-                          className="flex items-center justify-between py-3"
-                        >
-                          <dt className="text-sm text-gray-500">{row.label}</dt>
-                          <dd className="text-sm font-medium text-gray-900">{row.value}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </div>
-                </details>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Feature highlights */}
-        {product.featureHighlights && (
-          <section className="mt-10">
-            <h2 className="mb-4 text-xl font-bold uppercase tracking-wide text-gray-900">
-              Funcționalități
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {product.featureHighlights.split(',').map((f) => (
-                <span
-                  key={f.trim()}
-                  className="rounded-full bg-sky-50 px-4 py-1.5 text-sm font-medium text-sky-700 ring-1 ring-sky-100"
-                >
-                  {f.trim()}
-                </span>
-              ))}
-            </div>
+            <SpecsTabs sections={specSections} features={product.featureHighlights} />
           </section>
         )}
 
