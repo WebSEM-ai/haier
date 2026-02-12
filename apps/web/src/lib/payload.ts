@@ -10,6 +10,8 @@ export interface Product {
   shortDescription?: string | null
   series?: string | null
   capacity?: string | null
+  productType?: 'ac' | 'heat-pump' | null
+  phase?: string | null
   // Cooling
   coolingCapacityNominal?: string | null
   coolingCapacityRange?: string | null
@@ -26,12 +28,24 @@ export interface Product {
   scop?: string | null
   cop?: string | null
   energyClassHeating?: string | null
-  // Indoor unit
+  // Heat pump specific
+  scopAt35?: string | null
+  scopAt55?: string | null
+  energyClassHeating35?: string | null
+  energyClassHeating55?: string | null
+  maxWaterTemp?: string | null
+  refrigerantCharge?: string | null
+  operatingRangeMin?: string | null
+  operatingRangeMax?: string | null
+  soundPowerLevel?: string | null
+  unitDimensions?: string | null
+  unitWeight?: string | null
+  // Indoor unit (AC)
   indoorDimensions?: string | null
   indoorWeight?: string | null
   indoorNoiseMax?: string | null
   indoorNoiseLevels?: string | null
-  // Outdoor unit
+  // Outdoor unit (AC)
   outdoorDimensions?: string | null
   outdoorWeight?: string | null
   outdoorNoiseMax?: string | null

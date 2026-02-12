@@ -48,59 +48,106 @@ function EnergyLabel({ type, value }: { type: 'cooling' | 'heating'; value: stri
 /* ─── Build spec sections for tabs ─── */
 
 function buildSpecSections(product: Product): SpecSection[] {
-  const raw: { title: string; rows: { label: string; value: string | null | undefined }[] }[] = [
-    {
-      title: 'Răcire',
-      rows: [
-        { label: 'Capacitate nominală', value: product.coolingCapacityNominal },
-        { label: 'Interval capacitate', value: product.coolingCapacityRange },
-        { label: 'Consum putere', value: product.coolingPowerConsumption },
-        { label: 'Interval consum', value: product.coolingPowerRange },
-        { label: 'SEER', value: product.seer },
-        { label: 'EER', value: product.eer },
-        { label: 'Clasă energetică', value: product.energyClassCooling },
-      ],
-    },
-    {
-      title: 'Încălzire',
-      rows: [
-        { label: 'Capacitate nominală', value: product.heatingCapacityNominal },
-        { label: 'Interval capacitate', value: product.heatingCapacityRange },
-        { label: 'Consum putere', value: product.heatingPowerConsumption },
-        { label: 'Interval consum', value: product.heatingPowerRange },
-        { label: 'SCOP', value: product.scop },
-        { label: 'COP', value: product.cop },
-        { label: 'Clasă energetică', value: product.energyClassHeating },
-      ],
-    },
-    {
-      title: 'Unitate Interioară',
-      rows: [
-        { label: 'Dimensiuni (L x A x Î)', value: product.indoorDimensions },
-        { label: 'Greutate', value: product.indoorWeight },
-        { label: 'Zgomot maxim', value: product.indoorNoiseMax },
-        { label: 'Nivele zgomot', value: product.indoorNoiseLevels },
-      ],
-    },
-    {
-      title: 'Unitate Exterioară',
-      rows: [
-        { label: 'Dimensiuni (L x A x Î)', value: product.outdoorDimensions },
-        { label: 'Greutate', value: product.outdoorWeight },
-        { label: 'Zgomot maxim', value: product.outdoorNoiseMax },
-        { label: 'Tip compresor', value: product.compressorType },
-      ],
-    },
-    {
-      title: 'General',
-      rows: [
-        { label: 'Agent frigorific', value: product.refrigerant },
-        { label: 'Alimentare', value: product.powerSupply },
-        { label: 'Garanție', value: product.warranty },
-        { label: 'Fabricat în', value: product.madeIn },
-      ],
-    },
-  ]
+  type RawRow = { label: string; value: string | null | undefined }
+
+  const isHeatPump = product.productType === 'heat-pump'
+
+  const raw: { title: string; rows: RawRow[] }[] = isHeatPump
+    ? [
+        {
+          title: 'Performanță Încălzire',
+          rows: [
+            { label: 'Capacitate nominală', value: product.heatingCapacityNominal },
+            { label: 'SCOP la 35°C', value: product.scopAt35 },
+            { label: 'SCOP la 55°C', value: product.scopAt55 },
+            { label: 'COP', value: product.cop },
+            { label: 'Clasă energetică @35°C', value: product.energyClassHeating35 },
+            { label: 'Clasă energetică @55°C', value: product.energyClassHeating55 },
+            { label: 'Temp. max apă', value: product.maxWaterTemp },
+          ],
+        },
+        {
+          title: 'Performanță Răcire',
+          rows: [
+            { label: 'Capacitate nominală', value: product.coolingCapacityNominal },
+            { label: 'EER', value: product.eer },
+            { label: 'Clasă energetică', value: product.energyClassCooling },
+          ],
+        },
+        {
+          title: 'Unitate Monobloc',
+          rows: [
+            { label: 'Dimensiuni (L x A x Î)', value: product.unitDimensions },
+            { label: 'Greutate', value: product.unitWeight },
+            { label: 'Nivel putere sonoră', value: product.soundPowerLevel },
+          ],
+        },
+        {
+          title: 'General',
+          rows: [
+            { label: 'Agent frigorific', value: product.refrigerant },
+            { label: 'Sarcină refrigerant', value: product.refrigerantCharge },
+            { label: 'Alimentare', value: product.powerSupply },
+            { label: 'Faze', value: product.phase },
+            { label: 'Temp. min funcționare', value: product.operatingRangeMin },
+            { label: 'Temp. max funcționare', value: product.operatingRangeMax },
+            { label: 'Garanție', value: product.warranty },
+          ],
+        },
+      ]
+    : [
+        {
+          title: 'Răcire',
+          rows: [
+            { label: 'Capacitate nominală', value: product.coolingCapacityNominal },
+            { label: 'Interval capacitate', value: product.coolingCapacityRange },
+            { label: 'Consum putere', value: product.coolingPowerConsumption },
+            { label: 'Interval consum', value: product.coolingPowerRange },
+            { label: 'SEER', value: product.seer },
+            { label: 'EER', value: product.eer },
+            { label: 'Clasă energetică', value: product.energyClassCooling },
+          ],
+        },
+        {
+          title: 'Încălzire',
+          rows: [
+            { label: 'Capacitate nominală', value: product.heatingCapacityNominal },
+            { label: 'Interval capacitate', value: product.heatingCapacityRange },
+            { label: 'Consum putere', value: product.heatingPowerConsumption },
+            { label: 'Interval consum', value: product.heatingPowerRange },
+            { label: 'SCOP', value: product.scop },
+            { label: 'COP', value: product.cop },
+            { label: 'Clasă energetică', value: product.energyClassHeating },
+          ],
+        },
+        {
+          title: 'Unitate Interioară',
+          rows: [
+            { label: 'Dimensiuni (L x A x Î)', value: product.indoorDimensions },
+            { label: 'Greutate', value: product.indoorWeight },
+            { label: 'Zgomot maxim', value: product.indoorNoiseMax },
+            { label: 'Nivele zgomot', value: product.indoorNoiseLevels },
+          ],
+        },
+        {
+          title: 'Unitate Exterioară',
+          rows: [
+            { label: 'Dimensiuni (L x A x Î)', value: product.outdoorDimensions },
+            { label: 'Greutate', value: product.outdoorWeight },
+            { label: 'Zgomot maxim', value: product.outdoorNoiseMax },
+            { label: 'Tip compresor', value: product.compressorType },
+          ],
+        },
+        {
+          title: 'General',
+          rows: [
+            { label: 'Agent frigorific', value: product.refrigerant },
+            { label: 'Alimentare', value: product.powerSupply },
+            { label: 'Garanție', value: product.warranty },
+            { label: 'Fabricat în', value: product.madeIn },
+          ],
+        },
+      ]
 
   return raw
     .map((s) => ({
@@ -145,16 +192,31 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   const specSections = buildSpecSections(product)
 
-  // Key specs for the right-side summary
-  const keySpecs = [
-    { label: 'Putere răcire', value: product.coolingCapacityNominal },
-    { label: 'Putere încălzire', value: product.heatingCapacityNominal },
-    { label: 'SEER', value: product.seer },
-    { label: 'SCOP', value: product.scop },
-    { label: 'Agent frigorific', value: product.refrigerant },
-    { label: 'Alimentare', value: product.powerSupply },
-    { label: 'Garanție', value: product.warranty },
-  ].filter((s) => s.value)
+  const isHeatPump = product.productType === 'heat-pump'
+
+  // Key specs for the right-side summary — different for AC vs heat pump
+  const keySpecs = (
+    isHeatPump
+      ? [
+          { label: 'Putere încălzire', value: product.heatingCapacityNominal },
+          { label: 'SCOP @35°C', value: product.scopAt35 },
+          { label: 'SCOP @55°C', value: product.scopAt55 },
+          { label: 'Clasă energetică @35°C', value: product.energyClassHeating35 },
+          { label: 'Temp. max apă', value: product.maxWaterTemp },
+          { label: 'Agent frigorific', value: product.refrigerant },
+          { label: 'Faze', value: product.phase },
+          { label: 'Garanție', value: product.warranty },
+        ]
+      : [
+          { label: 'Putere răcire', value: product.coolingCapacityNominal },
+          { label: 'Putere încălzire', value: product.heatingCapacityNominal },
+          { label: 'SEER', value: product.seer },
+          { label: 'SCOP', value: product.scop },
+          { label: 'Agent frigorific', value: product.refrigerant },
+          { label: 'Alimentare', value: product.powerSupply },
+          { label: 'Garanție', value: product.warranty },
+        ]
+  ).filter((s) => s.value)
 
   return (
     <div className="pt-28 pb-12">

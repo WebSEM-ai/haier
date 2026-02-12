@@ -1,12 +1,14 @@
 import type { CollectionConfig } from 'payload'
 import { revalidateProduct, revalidateProductDelete } from '../hooks/revalidate'
 
+const energyClassOptions = ['A+++', 'A++', 'A+', 'A', 'B', 'C', 'D']
+
 export const Products: CollectionConfig = {
   slug: 'products',
   labels: { singular: 'Produs', plural: 'Produse' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'series', 'modelCode', 'categorySlug'],
+    defaultColumns: ['title', 'series', 'modelCode', 'categorySlug', 'productType'],
     group: 'Catalog',
   },
   access: {
@@ -35,11 +37,22 @@ export const Products: CollectionConfig = {
       admin: { position: 'sidebar' },
     },
     {
+      name: 'productType',
+      label: 'Tip produs',
+      type: 'select',
+      options: [
+        { label: 'Aer condiționat', value: 'ac' },
+        { label: 'Pompă de căldură', value: 'heat-pump' },
+      ],
+      defaultValue: 'ac',
+      admin: { position: 'sidebar' },
+    },
+    {
       name: 'series',
       label: 'Serie / Gamă',
       type: 'text',
       admin: {
-        description: 'Ex: Pearl Premium, Revive Plus, etc.',
+        description: 'Ex: Pearl Premium, Monobloc GT R290, etc.',
       },
     },
     {
@@ -48,7 +61,7 @@ export const Products: CollectionConfig = {
       type: 'text',
       required: true,
       admin: {
-        description: 'Ex: AS35PBPHRA-PRE1U35MEPFRA-PRE',
+        description: 'Ex: AS35PBPHRA-PRE / 1U35MEPFRA-PRE',
       },
     },
     {
@@ -56,7 +69,15 @@ export const Products: CollectionConfig = {
       label: 'Capacitate',
       type: 'text',
       admin: {
-        description: 'Ex: 3.5 kW, 10 kW mono, etc.',
+        description: 'Ex: 3.5 kW, 10 kW, etc.',
+      },
+    },
+    {
+      name: 'phase',
+      label: 'Faze electrice',
+      type: 'text',
+      admin: {
+        description: 'Monofazat / Trifazat (doar pompe de căldură)',
       },
     },
     {
@@ -65,7 +86,7 @@ export const Products: CollectionConfig = {
       type: 'text',
       required: true,
       admin: {
-        description: 'Slug-ul categoriei: climatizare, pompe-caldura, etc.',
+        description: 'Slug-ul categoriei: climatizare, pompe-de-caldura, etc.',
       },
     },
     {
@@ -78,7 +99,7 @@ export const Products: CollectionConfig = {
       label: 'Imagine principală (filename)',
       type: 'text',
       admin: {
-        description: 'Numele fișierului din Media (ex: pearl-premium.webp)',
+        description: 'Numele fișierului din R2 (ex: pearl-premium.webp)',
       },
     },
 
@@ -110,7 +131,7 @@ export const Products: CollectionConfig = {
               fields: [
                 { name: 'seer', label: 'SEER', type: 'text', admin: { width: '33%' } },
                 { name: 'eer', label: 'EER', type: 'text', admin: { width: '33%' } },
-                { name: 'energyClassCooling', label: 'Clasă energetică', type: 'select', options: ['A+++', 'A++', 'A+', 'A', 'B', 'C', 'D'], admin: { width: '33%' } },
+                { name: 'energyClassCooling', label: 'Clasă energetică răcire', type: 'select', options: energyClassOptions, admin: { width: '33%' } },
               ],
             },
           ],
@@ -137,13 +158,51 @@ export const Products: CollectionConfig = {
               fields: [
                 { name: 'scop', label: 'SCOP', type: 'text', admin: { width: '33%' } },
                 { name: 'cop', label: 'COP', type: 'text', admin: { width: '33%' } },
-                { name: 'energyClassHeating', label: 'Clasă energetică', type: 'select', options: ['A+++', 'A++', 'A+', 'A', 'B', 'C', 'D'], admin: { width: '33%' } },
+                { name: 'energyClassHeating', label: 'Clasă energetică încălzire', type: 'select', options: energyClassOptions, admin: { width: '33%' } },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Pompă de Căldură',
+          description: 'Câmpuri specifice pentru pompe de căldură',
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                { name: 'scopAt35', label: 'SCOP la LWT 35°C', type: 'text', admin: { width: '33%' } },
+                { name: 'scopAt55', label: 'SCOP la LWT 55°C', type: 'text', admin: { width: '33%' } },
+                { name: 'maxWaterTemp', label: 'Temp. max apă (°C)', type: 'text', admin: { width: '33%' } },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                { name: 'energyClassHeating35', label: 'Clasă energetică @35°C', type: 'select', options: energyClassOptions, admin: { width: '33%' } },
+                { name: 'energyClassHeating55', label: 'Clasă energetică @55°C', type: 'select', options: energyClassOptions, admin: { width: '33%' } },
+                { name: 'refrigerantCharge', label: 'Sarcină refrigerant (g)', type: 'text', admin: { width: '33%' } },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                { name: 'operatingRangeMin', label: 'Temp. min funcționare', type: 'text', admin: { width: '33%' } },
+                { name: 'operatingRangeMax', label: 'Temp. max funcționare', type: 'text', admin: { width: '33%' } },
+                { name: 'soundPowerLevel', label: 'Nivel putere sonoră (dB)', type: 'text', admin: { width: '33%' } },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                { name: 'unitDimensions', label: 'Dimensiuni unitate (mm)', type: 'text', admin: { width: '50%' } },
+                { name: 'unitWeight', label: 'Greutate unitate (kg)', type: 'text', admin: { width: '50%' } },
               ],
             },
           ],
         },
         {
           label: 'Unitate Interioară',
+          description: 'Doar pentru aer condiționat',
           fields: [
             {
               type: 'row',
@@ -163,6 +222,7 @@ export const Products: CollectionConfig = {
         },
         {
           label: 'Unitate Exterioară',
+          description: 'Doar pentru aer condiționat',
           fields: [
             {
               type: 'row',
@@ -186,8 +246,8 @@ export const Products: CollectionConfig = {
             {
               type: 'row',
               fields: [
-                { name: 'refrigerant', label: 'Agent frigorific', type: 'text', admin: { width: '50%' }, defaultValue: 'R32' },
-                { name: 'powerSupply', label: 'Alimentare', type: 'text', admin: { width: '50%' }, defaultValue: '220-240V/50Hz' },
+                { name: 'refrigerant', label: 'Agent frigorific', type: 'text', admin: { width: '50%' } },
+                { name: 'powerSupply', label: 'Alimentare', type: 'text', admin: { width: '50%' } },
               ],
             },
             {
