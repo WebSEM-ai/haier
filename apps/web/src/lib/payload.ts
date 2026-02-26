@@ -118,7 +118,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 export async function getProductsByCategorySlug(categorySlug: string): Promise<Product[]> {
   try {
     const res = await fetch(
-      `${CMS_URL}/api/products?where[categorySlug][equals]=${encodeURIComponent(categorySlug)}&sort=order&depth=0`,
+      `${CMS_URL}/api/products?where[categorySlug][equals]=${encodeURIComponent(categorySlug)}&sort=order&depth=0&limit=50`,
       { next: { tags: ['products'] } }
     )
     if (!res.ok) return []
