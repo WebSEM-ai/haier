@@ -99,9 +99,12 @@ export function CategoryGrid({ categories: _categories, showTitle = true }: Cate
   const cat = showcaseCategories[active]
 
   return (
-    <section className="relative overflow-hidden bg-white py-16 lg:py-24">
-      {/* Subtle bg pattern */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.04),transparent_60%)]" />
+    <section className="relative overflow-hidden bg-gray-950 py-16 lg:py-24">
+      {/* Grid texture */}
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
+
+      {/* Top separator line from BrandShowcase */}
+      <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-6 xl:px-10">
         {showTitle && (
@@ -112,10 +115,10 @@ export function CategoryGrid({ categories: _categories, showTitle = true }: Cate
             viewport={{ once: true }}
             className="text-center"
           >
-            <p className="text-xs font-medium uppercase tracking-widest text-sky-600">
+            <p className="text-xs font-medium uppercase tracking-widest text-sky-400">
               Categorii de produse
             </p>
-            <h2 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+            <h2 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-5xl lg:text-6xl">
               Explorează gama
             </h2>
           </motion.div>
@@ -136,13 +139,13 @@ export function CategoryGrid({ categories: _categories, showTitle = true }: Cate
                 key={c.id}
                 onClick={() => setActive(i)}
                 className={`relative rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
-                  isActive ? 'text-white' : 'text-gray-500 hover:text-gray-900'
+                  isActive ? 'text-white' : 'text-gray-500 hover:text-gray-300'
                 }`}
               >
                 {isActive && (
                   <motion.div
                     layoutId="cat-tab-bg"
-                    className="absolute inset-0 rounded-full bg-gray-900"
+                    className="absolute inset-0 rounded-full bg-white/10 ring-1 ring-white/20"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -161,14 +164,14 @@ export function CategoryGrid({ categories: _categories, showTitle = true }: Cate
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
               transition={{ duration: 0.35 }}
-              className="overflow-hidden rounded-3xl border border-gray-200/80 bg-gradient-to-br from-gray-50 to-white shadow-xl shadow-gray-200/40"
+              className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-black/20 backdrop-blur-sm"
             >
               <div className="grid lg:grid-cols-2">
                 {/* Image side */}
-                <div className="relative flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-50 px-8 py-12 lg:min-h-[520px] lg:py-0">
+                <div className="relative flex items-center justify-center bg-gradient-to-br from-white/5 to-transparent px-8 py-12 lg:min-h-[520px] lg:py-0">
                   {/* Soft glow */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="h-64 w-64 rounded-full bg-sky-100/60 blur-3xl" />
+                    <div className="h-64 w-64 rounded-full bg-sky-500/10 blur-3xl" />
                   </div>
 
                   <motion.div
@@ -188,8 +191,8 @@ export function CategoryGrid({ categories: _categories, showTitle = true }: Cate
 
                   {/* Category badge label */}
                   <div className="absolute left-6 top-6 z-10">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-gray-900 shadow-sm ring-1 ring-gray-900/5 backdrop-blur-sm">
-                      <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-white shadow-sm ring-1 ring-white/20 backdrop-blur-sm">
+                      <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
                       {cat.subtitle}
                     </span>
                   </div>
@@ -202,10 +205,10 @@ export function CategoryGrid({ categories: _categories, showTitle = true }: Cate
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.15 }}
                   >
-                    <h3 className="font-display text-3xl font-bold uppercase tracking-tight text-gray-900 sm:text-4xl">
+                    <h3 className="font-display text-3xl font-bold uppercase tracking-tight text-white sm:text-4xl">
                       {cat.title}
                     </h3>
-                    <p className="mt-4 max-w-md leading-relaxed text-gray-600">
+                    <p className="mt-4 max-w-md leading-relaxed text-gray-400">
                       {cat.description}
                     </p>
                   </motion.div>
@@ -240,7 +243,7 @@ export function CategoryGrid({ categories: _categories, showTitle = true }: Cate
                     className="mt-6 space-y-2"
                   >
                     {cat.highlights.map((h) => (
-                      <li key={h} className="flex items-center gap-2.5 text-sm text-gray-700">
+                      <li key={h} className="flex items-center gap-2.5 text-sm text-gray-300">
                         <svg
                           className="h-4 w-4 shrink-0 text-sky-500"
                           fill="none"
@@ -271,11 +274,11 @@ export function CategoryGrid({ categories: _categories, showTitle = true }: Cate
                           <Link
                             key={s.label}
                             href={s.href}
-                            className="group inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-5 py-2.5 text-xs font-semibold text-gray-900 shadow-sm transition-all hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 hover:shadow-md hover:shadow-sky-100/50"
+                            className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition-all hover:border-sky-500/30 hover:bg-sky-500/10 hover:text-sky-400 hover:shadow-md hover:shadow-sky-500/10"
                           >
                             {s.label}
                             <svg
-                              className="h-3 w-3 text-gray-400 transition-all group-hover:translate-x-0.5 group-hover:text-sky-500"
+                              className="h-3 w-3 text-gray-500 transition-all group-hover:translate-x-0.5 group-hover:text-sky-400"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -298,7 +301,7 @@ export function CategoryGrid({ categories: _categories, showTitle = true }: Cate
                   >
                     <Link
                       href={`/produse/${cat.slug}`}
-                      className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-gray-900/20 transition-all hover:bg-gray-800 hover:shadow-gray-900/30"
+                      className="inline-flex items-center gap-2 rounded-full bg-sky-600 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-600/25 transition-all hover:bg-sky-500 hover:shadow-sky-500/30"
                     >
                       Descoperă produsele
                       <svg
@@ -313,7 +316,7 @@ export function CategoryGrid({ categories: _categories, showTitle = true }: Cate
                     </Link>
                     <Link
                       href="/cerere-oferta"
-                      className="text-sm font-medium text-gray-500 transition-colors hover:text-sky-600"
+                      className="text-sm font-medium text-gray-500 transition-colors hover:text-sky-400"
                     >
                       Cere ofertă →
                     </Link>

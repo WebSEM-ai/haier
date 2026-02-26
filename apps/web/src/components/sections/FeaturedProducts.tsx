@@ -14,12 +14,9 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
   if (products.length === 0) return null
 
   return (
-    <section className="relative overflow-hidden bg-gray-950 py-20 lg:py-28">
-      {/* Grid texture */}
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
-
-      {/* Top accent line */}
-      <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-500/30 to-transparent" />
+    <section className="relative overflow-hidden bg-white py-20 lg:py-28">
+      {/* Subtle radial bg */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.04),transparent_60%)]" />
 
       <div className="relative mx-auto max-w-7xl px-6 xl:px-10">
         {/* Header */}
@@ -31,20 +28,20 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
           className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end"
         >
           <div>
-            <p className="text-xs font-medium uppercase tracking-widest text-sky-400">
+            <p className="text-xs font-medium uppercase tracking-widest text-sky-600">
               Recomandate
             </p>
-            <h2 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <h2 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
               Produse populare
             </h2>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-gray-400">
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-gray-600">
               Cele mai apreciate soluții de climatizare, alese de clienții noștri
             </p>
           </div>
 
           <Link
             href="/produse"
-            className="group hidden items-center gap-2 text-sm font-medium text-sky-400 transition-colors hover:text-sky-300 sm:inline-flex"
+            className="group hidden items-center gap-2 text-sm font-medium text-sky-600 transition-colors hover:text-sky-700 sm:inline-flex"
           >
             Vezi toate produsele
             <svg
@@ -86,8 +83,6 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
         </motion.div>
       </div>
 
-      {/* Bottom accent line */}
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sky-500/30 to-transparent" />
     </section>
   )
 }
@@ -115,10 +110,10 @@ function FeaturedCard({
     >
       <Link
         href={`/produse/${categorySlug}/${product.slug}`}
-        className="group relative block overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:border-sky-500/30 hover:bg-white/[0.08] hover:shadow-2xl hover:shadow-sky-500/10"
+        className="group relative block overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-100 transition-all duration-300 hover:shadow-xl hover:ring-sky-100"
       >
         {/* Image */}
-        <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-white/5 to-transparent">
+        <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
           {imageUrl ? (
             <Image
               src={imageUrl}
@@ -128,15 +123,15 @@ function FeaturedCard({
             />
           ) : (
             <div className="flex h-full items-center justify-center">
-              <svg className="h-16 w-16 text-white/10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-16 w-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
           )}
 
           {/* Hover overlay */}
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
-            <span className="rounded-full bg-white/95 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-900 shadow-lg">
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <span className="rounded-full bg-white/90 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-900 shadow-lg backdrop-blur-sm">
               Vezi detalii
             </span>
           </div>
@@ -158,21 +153,21 @@ function FeaturedCard({
 
         {/* Content */}
         <div className="p-5">
-          <h3 className="font-display text-sm font-bold text-white transition-colors group-hover:text-sky-400 line-clamp-2">
+          <h3 className="font-display text-sm font-bold text-gray-900 transition-colors group-hover:text-sky-600 line-clamp-2">
             {product.title}
           </h3>
 
           {product.shortDescription && (
-            <p className="mt-2 text-xs leading-relaxed text-gray-500 line-clamp-2">
+            <p className="mt-2 text-xs leading-relaxed text-gray-600 line-clamp-2">
               {product.shortDescription}
             </p>
           )}
 
-          <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
-            <span className="text-[11px] font-medium tracking-wider text-gray-600">
+          <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
+            <span className="text-[11px] font-medium tracking-wider text-gray-400">
               {product.modelCode}
             </span>
-            <span className="inline-flex items-center gap-1 text-xs font-medium text-sky-400 transition-all group-hover:gap-2">
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-sky-600 transition-all group-hover:gap-2">
               Detalii
               <svg
                 className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
