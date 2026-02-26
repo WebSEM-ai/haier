@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -9,6 +9,12 @@ import { SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants'
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+})
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['500', '600', '700'],
+  variable: '--font-display',
 })
 
 export const metadata: Metadata = {
@@ -34,7 +40,7 @@ export default async function RootLayout({
 
   return (
     <html lang="ro">
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
         <div className="flex min-h-screen flex-col">
           <Header categories={categories} />
           <main className="flex-1">{children}</main>

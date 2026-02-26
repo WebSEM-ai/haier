@@ -98,7 +98,7 @@ export function Hero() {
   }
 
   return (
-    <section className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden bg-gray-950">
+    <section className="relative h-screen min-h-[600px] max-h-[850px] overflow-hidden bg-gray-950">
       {/* Background */}
       <AnimatePresence mode="sync">
         <motion.div
@@ -117,7 +117,7 @@ export function Hero() {
             className="object-cover"
             priority={current === 0}
           />
-          <div className="absolute inset-0 bg-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/50" />
         </motion.div>
       </AnimatePresence>
 
@@ -150,10 +150,10 @@ export function Hero() {
                 transition={{ duration: 0.5, ease: 'easeOut' }}
                 className="max-w-xl"
               >
-                <p className="mb-4 text-lg text-gray-300">
+                <p className="mb-4 text-sm font-medium uppercase tracking-widest text-gray-400 lg:text-base">
                   {slide.subtitle}
                 </p>
-                <h1 className="mb-8 text-5xl font-bold uppercase leading-none tracking-tight text-white lg:text-7xl">
+                <h1 className="mb-8 font-display text-5xl font-bold uppercase leading-none tracking-tight text-white lg:text-7xl xl:text-8xl">
                   {slide.title}
                   {slide.titleLine2 && (
                     <>
@@ -164,7 +164,7 @@ export function Hero() {
                 </h1>
                 <Link
                   href={slide.ctaLink}
-                  className="group inline-flex items-center gap-2 rounded-full border-2 border-white px-8 py-4 font-medium text-white transition-all hover:bg-white hover:text-gray-900"
+                  className="group inline-flex items-center gap-2 rounded-full border-2 border-white px-10 py-4 font-display text-sm font-semibold uppercase tracking-wider text-white transition-all hover:bg-white hover:text-gray-900"
                 >
                   {slide.cta}
                   <svg
@@ -196,21 +196,21 @@ export function Hero() {
                 transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
                 className="relative flex items-center justify-center lg:justify-end"
               >
-                <div className="relative h-[50vh] lg:h-[70vh]">
+                <div className="relative h-[35vh] max-h-[500px] lg:h-[50vh]">
                   <Image
                     src={slide.product}
                     alt={slide.title}
-                    width={900}
-                    height={900}
-                    className="h-full w-auto object-contain drop-shadow-[0_0_40px_rgba(0,0,0,0.5)]"
+                    width={700}
+                    height={700}
+                    className="h-full w-auto object-contain drop-shadow-[0_0_30px_rgba(0,0,0,0.4)]"
                     priority={current === 0}
                   />
-                  {/* Plus button decorative */}
+                  {/* Plus button decorative — glass */}
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.6, type: 'spring', stiffness: 200 }}
-                    className="absolute -left-2 top-1/4 flex h-12 w-12 items-center justify-center rounded-full bg-white text-2xl font-light text-gray-900 shadow-xl"
+                    className="absolute -left-2 top-1/4 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-white/10 text-2xl font-light text-white backdrop-blur-sm"
                   >
                     +
                   </motion.div>
@@ -224,34 +224,34 @@ export function Hero() {
       {/* Navigation Arrows */}
       <button
         onClick={prev}
-        className="absolute left-4 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 text-white transition-all hover:border-white hover:bg-white/10 lg:left-8"
+        className="absolute left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 text-white/70 transition-all hover:border-white/60 hover:bg-white/10 hover:text-white lg:left-8"
         aria-label="Slide anterior"
       >
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
       <button
         onClick={next}
-        className="absolute right-4 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 text-white transition-all hover:border-white hover:bg-white/10 lg:right-8"
+        className="absolute right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 text-white/70 transition-all hover:border-white/60 hover:bg-white/10 hover:text-white lg:right-8"
         aria-label="Slide următor"
       >
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </button>
 
       {/* Dot Indicators */}
-      <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-2 rounded-full bg-black/30 px-4 py-2 backdrop-blur-sm">
+      <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goTo(index)}
             aria-label={`Slide ${index + 1}`}
-            className={`h-2.5 rounded-full transition-all duration-300 ${
+            className={`h-2 rounded-full transition-all duration-300 ${
               index === current
                 ? 'w-8 bg-white'
-                : 'w-2.5 bg-white/40 hover:bg-white/60'
+                : 'w-2 bg-white/40 hover:bg-white/60'
             }`}
           />
         ))}

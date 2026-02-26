@@ -64,15 +64,15 @@ export function TechFeatures() {
     <section className="relative overflow-hidden bg-white">
       <div className="grid lg:grid-cols-2">
         {/* Left side — Text + Tabs + Feature list */}
-        <div className="flex flex-col justify-center px-6 py-16 sm:px-12 lg:py-24 lg:pl-16 lg:pr-20 xl:pl-24">
+        <div className="flex flex-col justify-center px-6 py-12 sm:px-12 lg:py-20 lg:pl-16 lg:pr-16 xl:pl-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <p className="text-sm text-gray-500">Pentru confort și sănătate</p>
-            <h2 className="mt-3 text-4xl font-bold uppercase tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+            <p className="text-sm font-medium uppercase tracking-widest text-gray-400">Pentru confort și sănătate</p>
+            <h2 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
               Climatizatoare
             </h2>
             <p className="mt-6 max-w-lg text-base leading-relaxed text-gray-600">
@@ -98,7 +98,7 @@ export function TechFeatures() {
                 <button
                   key={tab.label}
                   onClick={() => setActiveTab(index)}
-                  className={`relative rounded-full px-5 py-2.5 text-sm font-medium transition-all ${
+                  className={`relative rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
                     activeTab === index
                       ? 'text-white'
                       : 'text-gray-500 hover:text-gray-900'
@@ -118,7 +118,7 @@ export function TechFeatures() {
           </motion.div>
 
           {/* Feature list — animated */}
-          <div className="mt-6 min-h-[340px]">
+          <div className="mt-6 min-h-[300px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -134,7 +134,7 @@ export function TechFeatures() {
                     initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.06 }}
-                    className="group flex items-center justify-between py-6"
+                    className="group flex items-center justify-between py-4"
                   >
                     <div className="flex items-center gap-4">
                       <svg
@@ -147,17 +147,17 @@ export function TechFeatures() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                       </svg>
                       <div>
-                        <span className="text-sm text-gray-500">{feature.category}: </span>
-                        <span className="text-sm font-bold text-gray-900">{feature.title}</span>
+                        <span className="text-xs font-medium uppercase tracking-wider text-gray-400">{feature.category}: </span>
+                        <span className="font-display text-sm font-bold text-gray-900">{feature.title}</span>
                       </div>
                     </div>
-                    <div className="ml-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gray-50 p-2 transition-all group-hover:bg-gray-100 group-hover:shadow-md">
+                    <div className="ml-4 flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gray-50 p-2 transition-all group-hover:bg-gray-100 group-hover:shadow-md">
                       <Image
                         src={feature.icon}
                         alt={feature.title}
-                        width={48}
-                        height={48}
-                        className="h-10 w-10 object-contain"
+                        width={64}
+                        height={64}
+                        className="h-14 w-14 object-contain"
                       />
                     </div>
                   </motion.div>
