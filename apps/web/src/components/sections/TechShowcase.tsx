@@ -77,51 +77,44 @@ export function TechShowcase() {
   const slide = slides[active]
 
   return (
-    <section className="relative overflow-hidden bg-[#f8f9fa]">
-      {/* Subtle blueprint grid background */}
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(0,0,0,.018)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,.018)_1px,transparent_1px)] bg-[size:48px_48px]" />
-
+    <section className="relative overflow-hidden bg-[#e8e8ea]">
       {/* Top accent line */}
       <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sky-500/20 to-transparent" />
 
-      <div className="relative mx-auto max-w-7xl px-6 py-20 lg:py-28 xl:px-10">
-        {/* Section header */}
+      <div className="relative mx-auto max-w-7xl px-6 pt-14 pb-12 lg:pt-16 lg:pb-14 xl:px-10">
+        {/* Section header — compact */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="mb-14 text-center"
+          className="mb-8 flex flex-col items-center gap-4 sm:flex-row sm:items-end sm:justify-between"
         >
-          <p className="text-xs font-medium uppercase tracking-widest text-sky-600">
-            Descoperă Tehnologia
-          </p>
-          <h2 className="mt-3 font-display text-3xl font-bold uppercase tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
-            Diagrame Tehnice
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-500">
-            Explorează arhitectura și componentele cheie ale sistemelor Haier de climatizare
-            rezidențială și pompe de căldură.
-          </p>
-        </motion.div>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-widest text-sky-600">
+              Descoperă Tehnologia
+            </p>
+            <h2 className="mt-1.5 font-display text-2xl font-bold uppercase tracking-tight text-gray-900 sm:text-3xl">
+              Diagrame Tehnice
+            </h2>
+          </div>
 
-        {/* Tab navigation */}
-        <div className="mb-10 flex justify-center">
-          <div className="inline-flex gap-2 rounded-2xl border border-gray-200 bg-white p-1.5 shadow-sm">
+          {/* Tab navigation — inline with header */}
+          <div className="inline-flex gap-1.5 rounded-xl border border-gray-300/60 bg-white/60 p-1 backdrop-blur-sm">
             {slides.map((s, i) => {
               const isActive = active === i
               return (
                 <button
                   key={s.id}
                   onClick={() => goTo(i)}
-                  className={`relative rounded-xl px-6 py-3 text-sm font-semibold transition-colors ${
+                  className={`relative rounded-lg px-5 py-2 text-xs font-semibold transition-colors ${
                     isActive ? 'text-white' : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
                   {isActive && (
                     <motion.div
                       layoutId="tech-tab-bg"
-                      className="absolute inset-0 rounded-xl bg-gray-900"
+                      className="absolute inset-0 rounded-lg bg-gray-900"
                       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                     />
                   )}
@@ -130,48 +123,48 @@ export function TechShowcase() {
               )
             })}
           </div>
-        </div>
+        </motion.div>
 
         {/* Main content */}
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={slide.id}
             custom={direction}
-            initial={{ opacity: 0, x: direction * 60 }}
+            initial={{ opacity: 0, x: direction * 40 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: direction * -60 }}
-            transition={{ duration: 0.45, ease: 'easeInOut' }}
-            className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16"
+            exit={{ opacity: 0, x: direction * -40 }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            className="grid items-center gap-6 lg:grid-cols-[1fr_380px] lg:gap-10"
           >
-            {/* Left: Image */}
+            {/* Left: Image — seamless, no card/border */}
             <div className="relative">
-              {/* Soft glow */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="h-96 w-96 rounded-full bg-sky-100/60 blur-3xl" />
-              </div>
+              <div className="relative mx-auto max-w-lg lg:max-w-none">
+                {/* Fade edges to blend with section background */}
+                <div className="pointer-events-none absolute inset-0 z-10" style={{
+                  boxShadow: 'inset 0 0 60px 40px #e8e8ea',
+                }} />
 
-              <div className="relative overflow-hidden rounded-3xl border border-gray-200/60 bg-white/80 p-4 shadow-xl shadow-gray-200/40 backdrop-blur-sm">
                 <Image
                   src={slide.image}
                   alt={slide.imageAlt}
                   width={800}
                   height={1000}
-                  className="h-auto w-full rounded-2xl object-contain"
+                  className="h-auto max-h-[520px] w-full object-contain"
                   priority
                 />
               </div>
 
-              {/* Progress bar */}
-              <div className="mt-6 flex items-center gap-3">
+              {/* Progress bar — tight under image */}
+              <div className="mx-auto mt-3 flex max-w-xs items-center gap-2">
                 {slides.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => goTo(i)}
-                    className="relative h-1 flex-1 overflow-hidden rounded-full bg-gray-200"
+                    className="relative h-0.5 flex-1 overflow-hidden rounded-full bg-gray-300"
                   >
                     {active === i && (
                       <motion.div
-                        className="absolute inset-y-0 left-0 bg-sky-500 rounded-full"
+                        className="absolute inset-y-0 left-0 rounded-full bg-sky-500"
                         initial={{ width: '0%' }}
                         animate={{ width: '100%' }}
                         transition={{ duration: INTERVAL / 1000, ease: 'linear' }}
@@ -182,17 +175,17 @@ export function TechShowcase() {
               </div>
             </div>
 
-            {/* Right: Content */}
+            {/* Right: Content — compact */}
             <div>
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.15 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
               >
-                <p className="text-xs font-medium uppercase tracking-widest text-sky-600">
+                <p className="text-[11px] font-medium uppercase tracking-widest text-sky-600">
                   {slide.subtitle}
                 </p>
-                <h3 className="mt-3 font-display text-4xl font-bold uppercase leading-tight tracking-tight text-gray-900 sm:text-5xl">
+                <h3 className="mt-2 font-display text-3xl font-bold uppercase leading-tight tracking-tight text-gray-900 sm:text-4xl">
                   {slide.title.split('\n').map((line, i) => (
                     <span key={i}>
                       {i > 0 && <br />}
@@ -204,35 +197,35 @@ export function TechShowcase() {
 
               {/* Highlights grid */}
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.25 }}
-                className="mt-8 grid grid-cols-2 gap-3"
+                transition={{ duration: 0.4, delay: 0.2 }}
+                className="mt-5 grid grid-cols-2 gap-2"
               >
                 {slide.highlights.map((h, i) => (
                   <div
                     key={i}
-                    className="rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm"
+                    className="rounded-lg bg-white/50 px-3 py-2 backdrop-blur-sm"
                   >
-                    <p className="text-[11px] font-medium uppercase tracking-wider text-gray-400">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-gray-400">
                       {h.label}
                     </p>
-                    <p className="mt-1 text-sm font-bold text-gray-900">{h.value}</p>
+                    <p className="mt-0.5 text-sm font-bold text-gray-900">{h.value}</p>
                   </div>
                 ))}
               </motion.div>
 
               {/* Features list */}
               <motion.ul
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.35 }}
-                className="mt-8 space-y-3"
+                transition={{ duration: 0.4, delay: 0.3 }}
+                className="mt-5 space-y-2"
               >
                 {slide.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
+                  <li key={i} className="flex items-start gap-2.5 text-[13px] leading-snug text-gray-600">
                     <svg
-                      className="mt-0.5 h-4 w-4 shrink-0 text-sky-500"
+                      className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sky-500"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -245,42 +238,34 @@ export function TechShowcase() {
                 ))}
               </motion.ul>
 
-              {/* Series badges */}
+              {/* Series badges + CTA */}
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.45 }}
-                className="mt-8"
+                transition={{ duration: 0.4, delay: 0.4 }}
+                className="mt-5"
               >
-                <p className="mb-3 text-[11px] font-medium uppercase tracking-wider text-gray-400">
+                <p className="mb-2 text-[10px] font-medium uppercase tracking-wider text-gray-400">
                   Game de produse
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {slide.series.map((s) => (
                     <span
                       key={s}
-                      className="rounded-full border border-sky-200 bg-sky-50 px-4 py-1.5 text-xs font-semibold text-sky-700"
+                      className="rounded-full border border-sky-200/80 bg-sky-50/70 px-3 py-1 text-[11px] font-semibold text-sky-700"
                     >
                       {s}
                     </span>
                   ))}
                 </div>
-              </motion.div>
 
-              {/* CTA */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.55 }}
-                className="mt-10"
-              >
                 <Link
                   href={slide.cta.href}
-                  className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-gray-900/20 transition-all hover:bg-gray-800 hover:shadow-gray-900/30"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-gray-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-gray-900/15 transition-all hover:bg-gray-800"
                 >
                   {slide.cta.label}
                   <svg
-                    className="h-4 w-4"
+                    className="h-3.5 w-3.5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
