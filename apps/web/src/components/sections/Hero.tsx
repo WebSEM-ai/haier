@@ -5,50 +5,119 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 
+interface HotSpot {
+  label: string
+  detail: string
+  top: string
+  left: string
+}
+
 interface Slide {
+  id: string
   bg: string
   product: string
   subtitle: string
   title: string
-  titleLine2?: string
+  titleLine2: string
   cta: string
   ctaLink: string
-  productLabels?: { text: string; top?: string; bottom?: string; right?: string; left?: string }[]
-  watermark?: string
+  watermarkText: string
+  hotspots: HotSpot[]
 }
 
 const slides: Slide[] = [
   {
+    id: 'climatizare',
     bg: '/images/hero/hero-bg.webp',
-    product: '/images/hero/ac-units.webp',
+    product: '/images/hero/hero-ac-unit.png',
     subtitle: 'Tehnologia viitorului, disponibilă azi!',
     title: 'SISTEME DE',
     titleLine2: 'CLIMATIZARE',
     cta: 'Vezi climatizatoare',
     ctaLink: '/produse/climatizare',
+    watermarkText: 'A+++',
+    hotspots: [
+      { label: 'Wi-Fi integrat', detail: 'Control de la distanță prin aplicație mobilă hOn', top: '18%', left: '55%' },
+      { label: 'R32 Ecologic', detail: 'Refrigerant nou cu potențial redus de încălzire globală', top: '42%', left: '15%' },
+      { label: 'Ultra silențios', detail: 'Nivel de zgomot scăzut la doar 15 dB(A)', top: '65%', left: '70%' },
+      { label: 'Inverter', detail: 'Compresor inverter cu eficiență energetică A+++', top: '80%', left: '30%' },
+    ],
   },
   {
+    id: 'pompe-caldura',
     bg: '/images/hero/naglowek-tlo-pompy-ciepla.webp',
-    product: '/images/hero/naglowek-pompa-ciepla.webp',
+    product: '/images/hero/hero-pompa-caldura.png',
     subtitle: 'Eficiență energetică maximă!',
     title: 'POMPE DE',
     titleLine2: 'CĂLDURĂ',
     cta: 'Vezi pompe de căldură',
     ctaLink: '/produse/pompe-de-caldura',
-    watermark: '/images/hero/oznaczeniea.webp',
-  },
-  {
-    bg: '/images/hero/naglowek-tlo.webp',
-    product: '/images/hero/naglowek-mrv-chiller.webp',
-    subtitle: 'Soluții profesionale pentru business!',
-    title: 'CHILLER',
-    titleLine2: 'ȘI MRV',
-    cta: 'Solicită ofertă',
-    ctaLink: '/cerere-oferta',
+    watermarkText: 'R290',
+    hotspots: [
+      { label: 'Super Aqua', detail: 'Tehnologie avansată pentru încălzire și apă caldă', top: '15%', left: '60%' },
+      { label: 'R290 Natural', detail: 'Refrigerant ecologic cu impact minim asupra mediului', top: '35%', left: '20%' },
+      { label: 'Compresor Inverter', detail: 'Eficiență maximă și funcționare silențioasă', top: '60%', left: '65%' },
+      { label: 'Climat extrem', detail: 'Funcționare la -30°C încălzire și -20°C răcire', top: '80%', left: '35%' },
+    ],
   },
 ]
 
-const INTERVAL = 6000
+const INTERVAL = 7000
+
+function HotSpotButton({ spot, index }: { spot: HotSpot; index: number }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <motion.div
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ delay: 0.5 + index * 0.12, type: 'spring', stiffness: 260, damping: 20 }}
+      className="absolute z-20"
+      style={{ top: spot.top, left: spot.left }}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onClick={() => setOpen(!open)}
+    >
+      {/* Pulse ring */}
+      <span className="absolute inset-0 animate-ping rounded-full bg-white/20" />
+
+      {/* Button */}
+      <button className="relative flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/10 text-lg font-light text-white backdrop-blur-md transition-all hover:scale-110 hover:border-white/70 hover:bg-white/20">
+        +
+      </button>
+
+      {/* Tooltip */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="absolute left-1/2 top-full z-30 mt-3 w-52 -translate-x-1/2 rounded-xl border border-white/15 bg-gray-950/90 px-4 py-3 backdrop-blur-xl"
+          >
+            {/* Arrow */}
+            <div className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-l border-t border-white/15 bg-gray-950/90" />
+            <p className="text-xs font-bold uppercase tracking-wider text-white">{spot.label}</p>
+            <p className="mt-1 text-[11px] leading-relaxed text-gray-400">{spot.detail}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
+const textVariants = {
+  enter: (d: number) => ({ opacity: 0, x: d * 60 }),
+  center: { opacity: 1, x: 0 },
+  exit: (d: number) => ({ opacity: 0, x: d * -60 }),
+}
+
+const productVariants = {
+  enter: (d: number) => ({ opacity: 0, x: d * 80, scale: 0.92 }),
+  center: { opacity: 1, x: 0, scale: 1 },
+  exit: (d: number) => ({ opacity: 0, x: d * -80, scale: 0.92 }),
+}
 
 export function Hero() {
   const [current, setCurrent] = useState(0)
@@ -79,34 +148,15 @@ export function Hero() {
 
   const slide = slides[current]
 
-  const bgVariants = {
-    enter: { opacity: 0 },
-    center: { opacity: 1 },
-    exit: { opacity: 0 },
-  }
-
-  const textVariants = {
-    enter: (d: number) => ({ opacity: 0, x: d * 60 }),
-    center: { opacity: 1, x: 0 },
-    exit: (d: number) => ({ opacity: 0, x: d * -60 }),
-  }
-
-  const productVariants = {
-    enter: (d: number) => ({ opacity: 0, x: d * 80, scale: 0.9 }),
-    center: { opacity: 1, x: 0, scale: 1 },
-    exit: (d: number) => ({ opacity: 0, x: d * -80, scale: 0.9 }),
-  }
-
   return (
-    <section className="relative h-screen min-h-[600px] max-h-[850px] overflow-hidden bg-gray-950">
-      {/* Background */}
+    <section className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden bg-gray-950">
+      {/* Background image */}
       <AnimatePresence mode="sync">
         <motion.div
           key={`bg-${current}`}
-          variants={bgVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: 'easeInOut' }}
           className="absolute inset-0"
         >
@@ -117,27 +167,47 @@ export function Hero() {
             className="object-cover"
             priority={current === 0}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/50" />
         </motion.div>
       </AnimatePresence>
 
-      {/* Watermark (A+++ for pompe de caldura) */}
-      {slide.watermark && (
-        <div className="absolute bottom-0 right-0 z-[1] opacity-30">
-          <Image
-            src={slide.watermark}
-            alt=""
-            width={600}
-            height={250}
-            className="pointer-events-none select-none"
-          />
-        </div>
-      )}
+      {/* Haier logo watermark — center background */}
+      <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center">
+        <Image
+          src="/images/hero/haier-logo.png"
+          alt=""
+          width={500}
+          height={500}
+          className="h-auto w-[340px] select-none opacity-[0.03] lg:w-[500px]"
+        />
+      </div>
+
+      {/* Large watermark text (A+++ / R290) — top right, faded */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`wm-${current}`}
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -40 }}
+          transition={{ duration: 0.6 }}
+          className="pointer-events-none absolute right-6 top-24 z-[2] select-none lg:right-16 lg:top-28"
+        >
+          <span
+            className="font-display text-[120px] font-bold uppercase leading-none tracking-tight lg:text-[200px] xl:text-[260px]"
+            style={{
+              WebkitTextStroke: '1px rgba(255,255,255,0.08)',
+              color: 'transparent',
+            }}
+          >
+            {slide.watermarkText}
+          </span>
+        </motion.div>
+      </AnimatePresence>
 
       {/* Content */}
       <div className="relative z-10 flex h-full items-center">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
+          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
             {/* Left — Text */}
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
@@ -155,12 +225,8 @@ export function Hero() {
                 </p>
                 <h1 className="mb-8 font-display text-5xl font-bold uppercase leading-none tracking-tight text-white lg:text-7xl xl:text-8xl">
                   {slide.title}
-                  {slide.titleLine2 && (
-                    <>
-                      <br />
-                      {slide.titleLine2}
-                    </>
-                  )}
+                  <br />
+                  {slide.titleLine2}
                 </h1>
                 <Link
                   href={slide.ctaLink}
@@ -173,18 +239,13 @@ export function Hero() {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 8l4 4m0 0l-4 4m4-4H3"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </Link>
               </motion.div>
             </AnimatePresence>
 
-            {/* Right — Product */}
+            {/* Right — Product with hotspots */}
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={`product-${current}`}
@@ -196,24 +257,20 @@ export function Hero() {
                 transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
                 className="relative flex items-center justify-center lg:justify-end"
               >
-                <div className="relative h-[35vh] max-h-[500px] lg:h-[50vh]">
+                <div className="relative h-[35vh] max-h-[520px] lg:h-[55vh]">
                   <Image
                     src={slide.product}
-                    alt={slide.title}
-                    width={700}
-                    height={700}
-                    className="h-full w-auto object-contain drop-shadow-[0_0_30px_rgba(0,0,0,0.4)]"
+                    alt={`${slide.title} ${slide.titleLine2}`}
+                    width={750}
+                    height={750}
+                    className="h-full w-auto object-contain drop-shadow-[0_0_40px_rgba(0,0,0,0.5)]"
                     priority={current === 0}
                   />
-                  {/* Plus button decorative — glass */}
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.6, type: 'spring', stiffness: 200 }}
-                    className="absolute -left-2 top-1/4 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-white/10 text-2xl font-light text-white backdrop-blur-sm"
-                  >
-                    +
-                  </motion.div>
+
+                  {/* Hotspots */}
+                  {slide.hotspots.map((spot, i) => (
+                    <HotSpotButton key={`${slide.id}-${i}`} spot={spot} index={i} />
+                  ))}
                 </div>
               </motion.div>
             </AnimatePresence>
