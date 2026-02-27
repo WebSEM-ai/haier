@@ -23,6 +23,8 @@ interface Slide {
   ctaLink: string
   watermarkText: string
   hotspots: HotSpot[]
+  descTitle: string
+  description: string
 }
 
 const slides: Slide[] = [
@@ -42,6 +44,8 @@ const slides: Slide[] = [
       { label: 'Ultra silențios', detail: 'Nivel de zgomot scăzut la doar 15 dB(A)', top: '65%', left: '70%' },
       { label: 'Inverter', detail: 'Compresor inverter cu eficiență energetică A+++', top: '80%', left: '30%' },
     ],
+    descTitle: 'CLIMATIZARE',
+    description: 'Gamă completă de aparate de aer condiționat cu tehnologie inverter, ionizare Nano Aqua și control Wi-Fi. Eficiență energetică până la clasa A+++ și nivel de zgomot de doar 15 dB(A).',
   },
   {
     id: 'pompe-caldura',
@@ -59,6 +63,8 @@ const slides: Slide[] = [
       { label: 'Compresor Inverter', detail: 'Eficiență maximă și funcționare silențioasă', top: '60%', left: '65%' },
       { label: 'Climat extrem', detail: 'Funcționare la -30°C încălzire și -20°C răcire', top: '80%', left: '35%' },
     ],
+    descTitle: 'POMPE DE CĂLDURĂ',
+    description: 'Destinate încălzirii locuinței și preparării apei calde menajere. Disponibile în variante monofuncționale (apă caldă) și bifuncționale (încălzire + apă caldă), cu refrigerant natural R290.',
   },
 ]
 
@@ -245,7 +251,7 @@ export function Hero() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Right — Product with hotspots */}
+            {/* Right — Product with hotspots + description */}
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={`product-${current}`}
@@ -255,14 +261,15 @@ export function Hero() {
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
-                className="relative flex items-center justify-center lg:justify-end"
+                className="relative flex flex-col items-center lg:items-end"
               >
-                <div className="relative h-[35vh] max-h-[520px] lg:h-[55vh]">
+                {/* Product image */}
+                <div className="relative h-[28vh] max-h-[380px] lg:h-[40vh]">
                   <Image
                     src={slide.product}
                     alt={`${slide.title} ${slide.titleLine2}`}
-                    width={750}
-                    height={750}
+                    width={650}
+                    height={650}
                     className="h-full w-auto object-contain drop-shadow-[0_0_40px_rgba(0,0,0,0.5)]"
                     priority={current === 0}
                   />
@@ -272,6 +279,21 @@ export function Hero() {
                     <HotSpotButton key={`${slide.id}-${i}`} spot={spot} index={i} />
                   ))}
                 </div>
+
+                {/* Description text below product */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="mt-6 max-w-md text-right"
+                >
+                  <h3 className="font-display text-sm font-bold uppercase tracking-wider text-white">
+                    {slide.descTitle}
+                  </h3>
+                  <p className="mt-2 text-[13px] leading-relaxed text-gray-400">
+                    {slide.description}
+                  </p>
+                </motion.div>
               </motion.div>
             </AnimatePresence>
           </div>
