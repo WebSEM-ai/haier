@@ -81,27 +81,6 @@ const showcaseCategories: ShowcaseCategory[] = [
       </svg>
     ),
   },
-  {
-    id: 'boilere',
-    slug: 'pompe-caldura',
-    title: 'Boilere cu pompă',
-    subtitle: 'Apă caldă eficientă',
-    description:
-      'Boilere cu pompă de căldură pentru apă caldă menajeră — economie de energie de până la 75% față de boilerele electrice clasice.',
-    image: '/images/categories/boiler.webp',
-    imageAlt: 'Boiler Haier cu pompă de căldură',
-    badges: [
-      { label: 'A+', sub: 'Clasă energetică' },
-      { label: 'R134a', sub: 'Refrigerant' },
-      { label: '240L', sub: 'Capacitate' },
-    ],
-    highlights: ['Economie 75% energie', 'Capacitate 200–300 L', 'Funcționare silențioasă'],
-    icon: (
-      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-  },
 ]
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -117,6 +96,18 @@ export function CategoryGrid({ categories: _categories, showTitle: _showTitle = 
 
   return (
     <section className="relative overflow-hidden bg-gray-950">
+      {/* Haier logo watermark */}
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+        <Image
+          src="/images/hero/haier-logo.png"
+          alt=""
+          width={800}
+          height={320}
+          className="h-auto w-[600px] opacity-[0.03]"
+          aria-hidden="true"
+        />
+      </div>
+
       {/* Grid texture — fine lines */}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:64px_64px]" />
 
