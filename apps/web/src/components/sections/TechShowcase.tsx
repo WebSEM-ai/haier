@@ -134,14 +134,14 @@ export function TechShowcase() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: direction * -40 }}
             transition={{ duration: 0.4, ease: 'easeInOut' }}
-            className="grid items-center gap-6 lg:grid-cols-2 lg:gap-8"
+            className="grid items-center gap-6 lg:grid-cols-[minmax(0,400px)_1fr] lg:gap-10"
           >
             {/* Left: Image — seamless, no card/border */}
             <div className="relative flex flex-col items-center">
-              <div className="relative mx-auto w-full max-w-md lg:max-w-lg">
+              <div className="relative w-full">
                 {/* Fade edges to blend with section background */}
                 <div className="pointer-events-none absolute inset-0 z-10" style={{
-                  boxShadow: 'inset 0 0 40px 24px #e8e8ea',
+                  boxShadow: 'inset 0 0 30px 20px #e8e8ea',
                 }} />
 
                 <Image
@@ -149,7 +149,7 @@ export function TechShowcase() {
                   alt={slide.imageAlt}
                   width={800}
                   height={1000}
-                  className="mx-auto h-auto max-h-[500px] w-auto object-contain"
+                  className="mx-auto h-auto max-h-[520px] w-full object-contain"
                   priority
                 />
               </div>
