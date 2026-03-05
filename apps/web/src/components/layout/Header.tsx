@@ -102,6 +102,7 @@ export function Header({ categories }: HeaderProps) {
           <NavSeparator />
 
           <NavLink href="/produse">Produse</NavLink>
+          <NavLink href="/oferta-personalizata">Ofertă personalizată</NavLink>
           <NavLink href="/contact">Contact</NavLink>
         </nav>
 

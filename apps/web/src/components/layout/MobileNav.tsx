@@ -70,6 +70,15 @@ export function MobileNav({ categories }: MobileNavProps) {
                 </li>
                 <li>
                   <Link
+                    href="/oferta-personalizata"
+                    onClick={() => setOpen(false)}
+                    className="block text-gray-300 hover:text-white"
+                  >
+                    Ofertă personalizată
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     href="/contact"
                     onClick={() => setOpen(false)}
                     className="block text-gray-300 hover:text-white"

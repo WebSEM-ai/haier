@@ -260,12 +260,20 @@ export function MegaMenuPanel({ section, onMouseEnter, onMouseLeave }: MegaMenuP
 
           {/* Footer */}
           <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
-            <Link
-              href={`/produse/${section.categorySlug}`}
-              className="text-sm font-medium text-sky-400 transition-colors hover:text-sky-300"
-            >
-              Vezi toate produsele {section.categoryLabel} →
-            </Link>
+            <div className="flex items-center gap-6">
+              <Link
+                href={`/produse/${section.categorySlug}`}
+                className="text-sm font-medium text-sky-400 transition-colors hover:text-sky-300"
+              >
+                Vezi toate produsele {section.categoryLabel} →
+              </Link>
+              <Link
+                href="/oferta-personalizata"
+                className="text-sm font-medium text-gray-400 transition-colors hover:text-sky-300"
+              >
+                Ofertă personalizată →
+              </Link>
+            </div>
 
             <a
               href={`tel:${CONTACT.phone}`}
