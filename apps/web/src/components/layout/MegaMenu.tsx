@@ -212,8 +212,8 @@ export function MegaMenuPanel({ section, onMouseEnter, onMouseLeave }: MegaMenuP
               </div>
             </div>
 
-            {/* Right column — Category preview */}
-            <div className="flex flex-col justify-between">
+            {/* Right column — Category CTA */}
+            <div className="flex flex-col gap-5">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
                   Categorie
@@ -224,37 +224,51 @@ export function MegaMenuPanel({ section, onMouseEnter, onMouseLeave }: MegaMenuP
                 <p className="mt-2 text-[13px] leading-relaxed text-gray-400">
                   {section.description}
                 </p>
-                <Link
-                  href={`/produse/${section.categorySlug}`}
-                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-sky-600 px-5 py-2.5 text-xs font-semibold text-white shadow-lg shadow-sky-600/25 transition-all hover:bg-sky-500 hover:shadow-sky-500/30"
-                >
-                  Vezi toate produsele
-                  <svg
-                    className="h-3.5 w-3.5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M17 8l4 4m0 0l-4 4m4-4H3"
-                    />
-                  </svg>
-                </Link>
               </div>
 
-              {/* Preview image */}
-              <div className="mt-6 flex items-center justify-center">
-                <Image
-                  src={section.previewImage}
-                  alt={section.categoryLabel}
-                  width={240}
-                  height={180}
-                  className="h-auto max-h-[140px] w-auto object-contain opacity-60"
-                />
-              </div>
+              <Link
+                href={`/produse/${section.categorySlug}`}
+                className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-sky-500 py-4 text-sm font-semibold text-white shadow-lg shadow-sky-500/25 transition-all hover:from-sky-500 hover:to-sky-400 hover:shadow-sky-500/40"
+              >
+                Vezi toate produsele
+                <svg
+                  className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </Link>
+
+              <p className="text-center text-[12px] text-gray-500">
+                {section.columns.reduce((sum, col) => sum + col.products.length, 0)} produse disponibile
+              </p>
+
+              <Link
+                href="/cerere-oferta"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 py-2.5 text-sm font-medium text-gray-400 transition-all hover:border-white/20 hover:text-white"
+              >
+                Cere ofertă
+                <svg
+                  className="h-3.5 w-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </Link>
             </div>
           </div>
 

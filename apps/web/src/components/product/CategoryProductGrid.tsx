@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { ProductCard } from './ProductCard'
 
 interface Product {
@@ -39,6 +39,111 @@ function getRoomLabel(capacity: string): string {
   if (kw <= 7.1) return `${capacity} · ~70 m²`
   return `${capacity} · ~${Math.round(kw * 10)} m²`
 }
+
+// ── FilterDropdown ──────────────────────────────────────────────────────────
+
+function FilterDropdown({
+  label,
+  options,
+  active,
+  onSelect,
+  renderLabel,
+}: {
+  label: string
+  options: string[]
+  active: string | null
+  onSelect: (value: string | null) => void
+  renderLabel?: (value: string) => string
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('click', handler, true)
+    return () => document.removeEventListener('click', handler, true)
+  }, [open])
+
+  const displayLabel = active ? (renderLabel ? renderLabel(active) : active) : label
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className={`inline-flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-all ${
+          active
+            ? 'border-sky-200 bg-sky-50 text-sky-700'
+            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+        }`}
+      >
+        {displayLabel}
+        <svg
+          className={`h-4 w-4 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="absolute left-0 top-full z-20 mt-1 min-w-[180px] rounded-xl border border-gray-100 bg-white p-1 shadow-lg">
+          <button
+            onClick={() => { onSelect(null); setOpen(false) }}
+            className={`w-full rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+              active === null ? 'bg-sky-50 font-medium text-sky-700' : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            Toate
+          </button>
+          {options.map((opt) => (
+            <button
+              key={opt}
+              onClick={() => { onSelect(opt); setOpen(false) }}
+              className={`w-full rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+                active === opt ? 'bg-sky-50 font-medium text-sky-700' : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              {renderLabel ? renderLabel(opt) : opt}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── FilterChip ──────────────────────────────────────────────────────────────
+
+function FilterChip({
+  label,
+  onRemove,
+}: {
+  label: string
+  onRemove: () => void
+}) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm text-sky-700">
+      {label}
+      <button
+        onClick={onRemove}
+        className="rounded-full p-0.5 transition-colors hover:bg-sky-100"
+        aria-label={`Elimină filtrul ${label}`}
+      >
+        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </span>
+  )
+}
+
+// ── CategoryProductGrid ─────────────────────────────────────────────────────
 
 export function CategoryProductGrid({ products }: CategoryProductGridProps) {
   const [activeSeries, setActiveSeries] = useState<string | null>(null)
@@ -97,32 +202,54 @@ export function CategoryProductGrid({ products }: CategoryProductGridProps) {
     return result
   }, [products, activeSeries, activeEnergy, activeCapacity, sortBy])
 
-  const activeFilterCount = [activeSeries, activeEnergy, activeCapacity].filter(Boolean).length
+  const activeFilters: { label: string; onRemove: () => void }[] = []
+  if (activeSeries) activeFilters.push({ label: activeSeries, onRemove: () => setActiveSeries(null) })
+  if (activeCapacity) activeFilters.push({ label: getRoomLabel(activeCapacity), onRemove: () => setActiveCapacity(null) })
+  if (activeEnergy) activeFilters.push({ label: activeEnergy, onRemove: () => setActiveEnergy(null) })
 
-  const clearAll = () => {
+  const clearAll = useCallback(() => {
     setActiveSeries(null)
     setActiveEnergy(null)
     setActiveCapacity(null)
     setSortBy('recommended')
-  }
+  }, [])
 
   return (
     <div>
       {/* Filters */}
-      <div className="mb-8 rounded-2xl bg-gray-50 p-5">
-        {/* Header row */}
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400">
-              Filtrează produse
-            </h3>
-            {activeFilterCount > 0 && (
-              <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-sky-600 px-1.5 text-xs font-bold text-white">
-                {activeFilterCount}
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-4">
+      <div className="mb-8 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        {/* Dropdowns row */}
+        <div className="flex flex-wrap items-center gap-2">
+          {capacityOptions.length > 1 && (
+            <FilterDropdown
+              label="Suprafață"
+              options={capacityOptions}
+              active={activeCapacity}
+              onSelect={setActiveCapacity}
+              renderLabel={getRoomLabel}
+            />
+          )}
+
+          {seriesOptions.length > 1 && (
+            <FilterDropdown
+              label="Serie"
+              options={seriesOptions}
+              active={activeSeries}
+              onSelect={setActiveSeries}
+            />
+          )}
+
+          {energyOptions.length > 1 && (
+            <FilterDropdown
+              label="Clasă energ."
+              options={energyOptions}
+              active={activeEnergy}
+              onSelect={setActiveEnergy}
+            />
+          )}
+
+          {/* Sort + reset pushed right */}
+          <div className="ml-auto flex items-center gap-3">
             <div className="flex items-center gap-2">
               <label htmlFor="sort-select" className="text-xs font-medium text-gray-400">
                 Sortare:
@@ -131,7 +258,7 @@ export function CategoryProductGrid({ products }: CategoryProductGridProps) {
                 id="sort-select"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortKey)}
-                className="rounded-lg border-0 bg-white py-1.5 pl-3 pr-8 text-sm font-medium text-gray-700 ring-1 ring-gray-200 focus:ring-2 focus:ring-sky-500"
+                className="rounded-lg border-0 bg-gray-50 py-1.5 pl-3 pr-8 text-sm font-medium text-gray-700 ring-1 ring-gray-200 focus:ring-2 focus:ring-sky-500"
               >
                 {SORT_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -140,58 +267,39 @@ export function CategoryProductGrid({ products }: CategoryProductGridProps) {
                 ))}
               </select>
             </div>
-            {activeFilterCount > 0 && (
+            {activeFilters.length > 0 && (
               <button
                 onClick={clearAll}
-                className="text-sm font-medium text-sky-600 hover:text-sky-700"
+                className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600"
+                aria-label="Resetează filtrele"
               >
-                Resetează
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             )}
           </div>
         </div>
 
-        {/* Filter groups */}
-        <div className="space-y-3">
-          {/* Room size / Capacity — most useful for customers */}
-          {capacityOptions.length > 1 && (
-            <FilterGroup
-              label="Suprafață cameră"
-              options={capacityOptions}
-              active={activeCapacity}
-              onSelect={setActiveCapacity}
-              renderLabel={getRoomLabel}
-            />
-          )}
-
-          {/* Series */}
-          {seriesOptions.length > 1 && (
-            <FilterGroup
-              label="Serie"
-              options={seriesOptions}
-              active={activeSeries}
-              onSelect={setActiveSeries}
-            />
-          )}
-
-          {/* Energy class */}
-          {energyOptions.length > 1 && (
-            <FilterGroup
-              label="Clasă energetică"
-              options={energyOptions}
-              active={activeEnergy}
-              onSelect={setActiveEnergy}
-              variant="energy"
-            />
-          )}
-        </div>
+        {/* Active chips row */}
+        {activeFilters.length > 0 && (
+          <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-gray-100 pt-3">
+            {activeFilters.map((f) => (
+              <FilterChip key={f.label} label={f.label} onRemove={f.onRemove} />
+            ))}
+            <span className="ml-auto text-sm text-gray-400">
+              {filtered.length} {filtered.length === 1 ? 'produs' : 'produse'}
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Results count */}
-      <p className="mb-6 text-sm text-gray-500">
-        {filtered.length} {filtered.length === 1 ? 'produs' : 'produse'}
-        {activeFilterCount > 0 ? ' (filtrate)' : ''}
-      </p>
+      {/* Results count (when no filters active) */}
+      {activeFilters.length === 0 && (
+        <p className="mb-6 text-sm text-gray-500">
+          {filtered.length} {filtered.length === 1 ? 'produs' : 'produse'}
+        </p>
+      )}
 
       {/* Product grid */}
       {filtered.length > 0 ? (
@@ -213,53 +321,6 @@ export function CategoryProductGrid({ products }: CategoryProductGridProps) {
           </button>
         </div>
       )}
-    </div>
-  )
-}
-
-function FilterGroup({
-  label,
-  options,
-  active,
-  onSelect,
-  variant,
-  renderLabel,
-}: {
-  label: string
-  options: string[]
-  active: string | null
-  onSelect: (value: string | null) => void
-  variant?: 'energy'
-  renderLabel?: (value: string) => string
-}) {
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="mr-1 text-sm font-medium text-gray-500">{label}:</span>
-      <button
-        onClick={() => onSelect(null)}
-        className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
-          active === null
-            ? 'bg-sky-600 text-white shadow-sm'
-            : 'bg-white text-gray-600 ring-1 ring-gray-200 hover:ring-gray-300'
-        }`}
-      >
-        Toate
-      </button>
-      {options.map((opt) => (
-        <button
-          key={opt}
-          onClick={() => onSelect(active === opt ? null : opt)}
-          className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
-            active === opt
-              ? variant === 'energy'
-                ? 'bg-green-600 text-white shadow-sm'
-                : 'bg-sky-600 text-white shadow-sm'
-              : 'bg-white text-gray-600 ring-1 ring-gray-200 hover:ring-gray-300'
-          }`}
-        >
-          {renderLabel ? renderLabel(opt) : opt}
-        </button>
-      ))}
     </div>
   )
 }
