@@ -79,6 +79,15 @@ export function MobileNav({ categories }: MobileNavProps) {
                 </li>
                 <li>
                   <Link
+                    href="/calculator-economii"
+                    onClick={() => setOpen(false)}
+                    className="block text-gray-300 hover:text-white"
+                  >
+                    Calculator economii
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     href="/contact"
                     onClick={() => setOpen(false)}
                     className="block text-gray-300 hover:text-white"

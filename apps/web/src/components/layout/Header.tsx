@@ -103,6 +103,7 @@ export function Header({ categories }: HeaderProps) {
 
           <NavLink href="/produse">Produse</NavLink>
           <NavLink href="/oferta-personalizata">Ofertă personalizată</NavLink>
+          <NavLink href="/calculator-economii">Calculator economii</NavLink>
           <NavLink href="/contact">Contact</NavLink>
         </nav>
 

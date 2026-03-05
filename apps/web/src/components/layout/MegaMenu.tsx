@@ -273,6 +273,12 @@ export function MegaMenuPanel({ section, onMouseEnter, onMouseLeave }: MegaMenuP
               >
                 Ofertă personalizată →
               </Link>
+              <Link
+                href="/calculator-economii"
+                className="text-sm font-medium text-gray-400 transition-colors hover:text-sky-300"
+              >
+                Calculator economii →
+              </Link>
             </div>
 
             <a
