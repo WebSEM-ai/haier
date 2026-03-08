@@ -83,8 +83,15 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
     setThermalResult(thermal)
 
     // Score products for total requirement
-    const scored = scoreProductsForTotal(products, thermal.totalRequiredKw, spaceType!)
-    setScoredProducts(scored)
+    console.log('[Configurator] Products received:', products.length, 'totalKw:', thermal.totalRequiredKw, 'spaceType:', spaceType)
+    try {
+      const scored = scoreProductsForTotal(products, thermal.totalRequiredKw, spaceType!)
+      console.log('[Configurator] Scored products:', scored.length, scored.map(s => `${s.product.title} (${s.score}%)`))
+      setScoredProducts(scored)
+    } catch (err) {
+      console.error('[Configurator] Scoring error:', err)
+      setScoredProducts([])
+    }
     goTo('results')
   }
 
