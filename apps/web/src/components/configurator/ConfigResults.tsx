@@ -202,189 +202,256 @@ export function ConfigResults({
       )}
 
       {/* Product recommendations */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="mb-4"
-      >
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-          Selectează produsele dorite
-        </h3>
-      </motion.div>
+      {scoredProducts.length > 0 ? (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="mb-4"
+          >
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              Selectează produsele dorite
+            </h3>
+          </motion.div>
 
-      <div className="space-y-4">
-        {scoredProducts.map((item, index) => {
-          const imageUrl = item.product.mainImageFilename
-            ? `${R2_PUBLIC_URL}/${item.product.mainImageFilename}`
-            : null
-          const isBest = index === 0
-          const isSelected = selectedIds.has(item.product.id)
+          <div className="space-y-4">
+            {scoredProducts.map((item, index) => {
+              const imageUrl = item.product.mainImageFilename
+                ? `${R2_PUBLIC_URL}/${item.product.mainImageFilename}`
+                : null
+              const isBest = index === 0
+              const isSelected = selectedIds.has(item.product.id)
 
-          return (
-            <motion.div
-              key={item.product.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + index * 0.1, type: 'spring', stiffness: 100 }}
-              className={`relative cursor-pointer overflow-hidden rounded-2xl border backdrop-blur-sm transition-all ${
-                isSelected
-                  ? 'border-sky-500/40 bg-sky-500/[0.07] shadow-[0_0_40px_rgba(14,165,233,0.1)]'
-                  : 'border-white/10 bg-white/5 hover:border-white/20'
-              }`}
-              onClick={() => toggleProduct(item.product.id)}
-            >
-              {isBest && (
-                <div className="absolute left-0 top-0 rounded-br-xl bg-sky-600 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-white">
-                  Cea mai bună potrivire
-                </div>
-              )}
-
-              <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:p-8">
-                {/* Checkbox */}
-                <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 transition-all ${
-                  isSelected
-                    ? 'border-sky-500 bg-sky-500'
-                    : 'border-white/20 bg-transparent'
-                }`}>
-                  {isSelected && (
-                    <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  )}
-                </div>
-
-                {/* Image */}
-                <div className="flex shrink-0 items-center justify-center sm:w-36">
-                  {imageUrl ? (
-                    <Image
-                      src={imageUrl}
-                      alt={item.product.title}
-                      width={144}
-                      height={108}
-                      className="h-auto max-h-[100px] w-auto object-contain"
-                    />
-                  ) : (
-                    <div className="flex h-20 w-28 items-center justify-center rounded-lg bg-white/5">
-                      <svg className="h-8 w-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.41a2.25 2.25 0 013.182 0l2.909 2.91m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                      </svg>
+              return (
+                <motion.div
+                  key={item.product.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + index * 0.1, type: 'spring', stiffness: 100 }}
+                  className={`relative cursor-pointer overflow-hidden rounded-2xl border backdrop-blur-sm transition-all ${
+                    isSelected
+                      ? 'border-sky-500/40 bg-sky-500/[0.07] shadow-[0_0_40px_rgba(14,165,233,0.1)]'
+                      : 'border-white/10 bg-white/5 hover:border-white/20'
+                  }`}
+                  onClick={() => toggleProduct(item.product.id)}
+                >
+                  {isBest && (
+                    <div className="absolute left-0 top-0 rounded-br-xl bg-sky-600 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-white">
+                      Cea mai bună potrivire
                     </div>
                   )}
-                </div>
 
-                {/* Info */}
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-start gap-3">
-                    <h3 className="font-display text-lg font-bold text-white">
-                      {item.product.title}
-                    </h3>
-                    <div className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold ${
-                      isBest ? 'bg-sky-500/20 text-sky-400' : 'bg-white/10 text-gray-300'
+                  <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:p-8">
+                    {/* Checkbox */}
+                    <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 transition-all ${
+                      isSelected
+                        ? 'border-sky-500 bg-sky-500'
+                        : 'border-white/20 bg-transparent'
                     }`}>
-                      <AnimatedScore target={item.score} />%
-                    </div>
-                  </div>
-
-                  {/* Specs badges */}
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {item.product.capacity && (
-                      <span className="inline-flex items-center rounded-full bg-white/5 px-2.5 py-0.5 text-xs text-gray-400 ring-1 ring-white/10">
-                        {item.product.capacity}
-                      </span>
-                    )}
-                    {item.coveragePercent > 0 && (
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ${
-                        item.coveragePercent >= 80
-                          ? 'bg-green-500/10 text-green-400 ring-green-500/20'
-                          : item.coveragePercent >= 50
-                            ? 'bg-amber-500/10 text-amber-400 ring-amber-500/20'
-                            : 'bg-red-500/10 text-red-400 ring-red-500/20'
-                      }`}>
-                        Acoperire {item.coveragePercent}%
-                      </span>
-                    )}
-                    {item.product.energyClassCooling && (
-                      <span className="inline-flex items-center rounded-full bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-400 ring-1 ring-green-500/20">
-                        {item.product.energyClassCooling}
-                      </span>
-                    )}
-                    {item.product.series && (
-                      <span className="inline-flex items-center rounded-full bg-sky-500/10 px-2.5 py-0.5 text-xs text-sky-400 ring-1 ring-sky-500/20">
-                        {item.product.series}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Match reasons */}
-                  <ul className="mt-3 space-y-1">
-                    {item.matchReasons.map((reason, ri) => (
-                      <li key={ri} className="flex items-center gap-2 text-sm text-gray-400">
-                        <svg className="h-3.5 w-3.5 shrink-0 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      {isSelected && (
+                        <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
-                        {reason}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                      )}
+                    </div>
 
-                {/* CTAs */}
-                <div className="flex shrink-0 flex-col gap-2 sm:w-40" onClick={(e) => e.stopPropagation()}>
-                  <InquiryDialog product={item.product} />
-                  <Link
-                    href={`/produse/${item.product.categorySlug || 'climatizare'}/${item.product.slug}`}
-                    className="flex items-center justify-center gap-2 rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:border-white/20 hover:bg-white/5 hover:text-white"
-                  >
-                    Detalii produs
-                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          )
-        })}
-      </div>
+                    {/* Image */}
+                    <div className="flex shrink-0 items-center justify-center sm:w-36">
+                      {imageUrl ? (
+                        <Image
+                          src={imageUrl}
+                          alt={item.product.title}
+                          width={144}
+                          height={108}
+                          className="h-auto max-h-[100px] w-auto object-contain"
+                        />
+                      ) : (
+                        <div className="flex h-20 w-28 items-center justify-center rounded-lg bg-white/5">
+                          <svg className="h-8 w-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.41a2.25 2.25 0 013.182 0l2.909 2.91m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
 
-      {/* Action buttons */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
-        className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-between"
-      >
-        <div className="flex gap-3">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-medium text-gray-300 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white"
+                    {/* Info */}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-start gap-3">
+                        <h3 className="font-display text-lg font-bold text-white">
+                          {item.product.title}
+                        </h3>
+                        <div className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold ${
+                          isBest ? 'bg-sky-500/20 text-sky-400' : 'bg-white/10 text-gray-300'
+                        }`}>
+                          <AnimatedScore target={item.score} />%
+                        </div>
+                      </div>
+
+                      {/* Specs badges */}
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {item.product.capacity && (
+                          <span className="inline-flex items-center rounded-full bg-white/5 px-2.5 py-0.5 text-xs text-gray-400 ring-1 ring-white/10">
+                            {item.product.capacity}
+                          </span>
+                        )}
+                        {item.coveragePercent > 0 && (
+                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ${
+                            item.coveragePercent >= 80
+                              ? 'bg-green-500/10 text-green-400 ring-green-500/20'
+                              : item.coveragePercent >= 50
+                                ? 'bg-amber-500/10 text-amber-400 ring-amber-500/20'
+                                : 'bg-red-500/10 text-red-400 ring-red-500/20'
+                          }`}>
+                            Acoperire {item.coveragePercent}%
+                          </span>
+                        )}
+                        {item.product.energyClassCooling && (
+                          <span className="inline-flex items-center rounded-full bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-400 ring-1 ring-green-500/20">
+                            {item.product.energyClassCooling}
+                          </span>
+                        )}
+                        {item.product.series && (
+                          <span className="inline-flex items-center rounded-full bg-sky-500/10 px-2.5 py-0.5 text-xs text-sky-400 ring-1 ring-sky-500/20">
+                            {item.product.series}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Match reasons */}
+                      <ul className="mt-3 space-y-1">
+                        {item.matchReasons.map((reason, ri) => (
+                          <li key={ri} className="flex items-center gap-2 text-sm text-gray-400">
+                            <svg className="h-3.5 w-3.5 shrink-0 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            {reason}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* CTAs */}
+                    <div className="flex shrink-0 flex-col gap-2 sm:w-40" onClick={(e) => e.stopPropagation()}>
+                      <InquiryDialog product={item.product} />
+                      <Link
+                        href={`/produse/${item.product.categorySlug || 'climatizare'}/${item.product.slug}`}
+                        className="flex items-center justify-center gap-2 rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:border-white/20 hover:bg-white/5 hover:text-white"
+                      >
+                        Detalii produs
+                        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </div>
+
+          {/* Action buttons */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-between"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
-            Modifică spațiul
-          </button>
-          <button
-            onClick={onReset}
-            className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-medium text-gray-300 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white"
-          >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
-            </svg>
-            Reîncepe
-          </button>
-        </div>
-        <button
-          onClick={handleContinue}
-          className="flex items-center gap-2 rounded-xl bg-sky-600 px-8 py-3 font-display text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-sky-600/25 transition-all hover:bg-sky-500 hover:shadow-sky-500/30"
+            <div className="flex gap-3">
+              <button
+                onClick={onBack}
+                className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-medium text-gray-300 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                </svg>
+                Modifică spațiul
+              </button>
+              <button
+                onClick={onReset}
+                className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-medium text-gray-300 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+                </svg>
+                Reîncepe
+              </button>
+            </div>
+            <button
+              onClick={handleContinue}
+              className="flex items-center gap-2 rounded-xl bg-sky-600 px-8 py-3 font-display text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-sky-600/25 transition-all hover:bg-sky-500 hover:shadow-sky-500/30"
+            >
+              Continuă cu selecția
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </button>
+          </motion.div>
+        </>
+      ) : (
+        /* Empty state — no products in catalog */
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="rounded-2xl border border-sky-500/20 bg-gradient-to-b from-sky-500/10 to-transparent p-10 text-center"
         >
-          Continuă cu selecția
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-          </svg>
-        </button>
-      </motion.div>
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-500/10 ring-1 ring-sky-500/20">
+            <svg className="h-8 w-8 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+            </svg>
+          </div>
+          <h3 className="font-display text-xl font-bold text-white">
+            Calculul termic este complet!
+          </h3>
+          <p className="mx-auto mt-3 max-w-md text-sm text-gray-400">
+            Spațiul tău necesită o capacitate de <span className="font-semibold text-sky-400">{thermalResult.totalRequiredKw} kW</span>.
+            Solicită o ofertă personalizată și un consultant Haier te va contacta cu soluția optimă.
+          </p>
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <Link
+              href="/cerere-oferta"
+              className="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-8 py-3.5 font-display text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-sky-600/25 transition-all hover:bg-sky-500 hover:shadow-sky-500/30"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
+              Solicită ofertă
+            </Link>
+            <Link
+              href="/produse"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-medium text-gray-300 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white"
+            >
+              Vezi toate produsele
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+          </div>
+
+          <div className="mt-8 flex items-center justify-center gap-3">
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-white"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+              </svg>
+              Modifică spațiul
+            </button>
+            <span className="text-gray-700">|</span>
+            <button
+              onClick={onReset}
+              className="flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-white"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+              </svg>
+              Reîncepe
+            </button>
+          </div>
+        </motion.div>
+      )}
     </div>
   )
 }
