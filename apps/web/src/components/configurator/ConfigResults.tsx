@@ -95,7 +95,11 @@ export function ConfigResults({
 
   function handleContinue() {
     const selected = scoredProducts.filter((sp) => selectedIds.has(sp.product.id))
-    onSelectProducts(selected.length > 0 ? selected : [scoredProducts[0]])
+    if (selected.length > 0) {
+      onSelectProducts(selected)
+    } else if (scoredProducts.length > 0) {
+      onSelectProducts([scoredProducts[0]])
+    }
   }
 
   return (

@@ -134,8 +134,8 @@ export function ConfigSummary({
           Produse selectate
         </h3>
         <div className="space-y-3">
-          {selectedProducts.map((item, index) => {
-            const imageUrl = item.product.mainImageFilename
+          {selectedProducts.filter(Boolean).map((item, index) => {
+            const imageUrl = item.product?.mainImageFilename
               ? `${R2_PUBLIC_URL}/${item.product.mainImageFilename}`
               : null
 
@@ -216,7 +216,7 @@ export function ConfigSummary({
           Trimite configurația ta și primești ofertă detaliată cu preț, montaj și garanție
         </p>
         <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          {selectedProducts[0] && (
+          {selectedProducts[0]?.product && (
             <InquiryDialog product={selectedProducts[0].product} />
           )}
           <Link

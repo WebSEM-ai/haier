@@ -208,7 +208,7 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
                 onReset={handleReset}
               />
             )}
-            {step === 'summary' && thermalResult && (
+            {step === 'summary' && thermalResult && selectedProducts.length > 0 && (
               <ConfigSummary
                 spaceType={spaceType!}
                 thermalResult={thermalResult}
