@@ -70,6 +70,15 @@ export function MobileNav({ categories }: MobileNavProps) {
                 </li>
                 <li>
                   <Link
+                    href="/configurator"
+                    onClick={() => setOpen(false)}
+                    className="block text-gray-300 hover:text-white"
+                  >
+                    Configurator cameră
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     href="/oferta-personalizata"
                     onClick={() => setOpen(false)}
                     className="block text-gray-300 hover:text-white"

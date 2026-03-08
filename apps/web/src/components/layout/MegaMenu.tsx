@@ -282,6 +282,12 @@ export function MegaMenuPanel({ section, onMouseEnter, onMouseLeave }: MegaMenuP
                 Vezi toate produsele {section.categoryLabel} →
               </Link>
               <Link
+                href="/configurator"
+                className="text-sm font-medium text-gray-400 transition-colors hover:text-sky-300"
+              >
+                Configurator cameră →
+              </Link>
+              <Link
                 href="/oferta-personalizata"
                 className="text-sm font-medium text-gray-400 transition-colors hover:text-sky-300"
               >
