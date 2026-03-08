@@ -46,6 +46,19 @@ export default async function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.YGC_WIDGET_ID = "1dacb1c9-697f-4bca-a611-9f160653aab9";
+              (function() {
+                var script = document.createElement('script');
+                script.src = "https://widget.yourgpt.ai/script.js";
+                script.id = 'yourgpt-chatbot';
+                document.body.appendChild(script);
+              })();
+            `,
+          }}
+        />
       </body>
     </html>
   )

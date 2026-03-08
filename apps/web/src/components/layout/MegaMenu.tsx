@@ -64,7 +64,7 @@ export const MENU_SECTIONS: MenuSection[] = [
   },
   {
     key: 'pompe-caldura',
-    categorySlug: 'pompe-caldura',
+    categorySlug: 'pompe-de-caldura',
     categoryLabel: 'Pompe de căldură',
     promoImage: '/images/categories/pompa-caldura.webp',
     promoLabel: 'Pompe de căldură',
