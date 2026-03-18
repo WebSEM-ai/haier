@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { DEFAULTS } from '@/lib/savings'
+import { DEFAULTS, validateMonths } from '@/lib/savings'
 import type { SystemType, ConsumptionData } from '@/lib/savings'
 
 interface StepConsumptionProps {
@@ -15,8 +15,11 @@ type Mode = 'bill' | 'estimate'
 export function StepConsumption({ systemType, onSubmit }: StepConsumptionProps) {
   const [mode, setMode] = useState<Mode>('bill')
 
+  const isGas = systemType === 'gas-boiler'
+
   // Bill mode
-  const [monthlyBill, setMonthlyBill] = useState(500)
+  const [monthlyBillElectric, setMonthlyBillElectric] = useState(isGas ? 200 : 500)
+  const [monthlyBillGas, setMonthlyBillGas] = useState(400)
   const [electricityPrice, setElectricityPrice] = useState<number>(DEFAULTS.electricityPrice)
   const [gasPrice, setGasPrice] = useState<number>(DEFAULTS.gasPrice)
 
@@ -26,13 +29,16 @@ export function StepConsumption({ systemType, onSubmit }: StepConsumptionProps) 
   const [monthsCooling, setMonthsCooling] = useState(4)
   const [monthsHeating, setMonthsHeating] = useState(6)
 
-  const isGas = systemType === 'gas-boiler'
+  const monthsError = mode === 'estimate' ? validateMonths(monthsCooling, monthsHeating) : null
 
   function handleSubmit() {
+    if (monthsError) return
+
     if (mode === 'bill') {
       onSubmit({
         mode: 'bill',
-        monthlyBill,
+        monthlyBillElectric,
+        monthlyBillGas: isGas ? monthlyBillGas : undefined,
         electricityPrice,
         gasPrice: isGas ? gasPrice : DEFAULTS.gasPrice,
       })
@@ -88,16 +94,31 @@ export function StepConsumption({ systemType, onSubmit }: StepConsumptionProps) 
             animate={{ opacity: 1, x: 0 }}
             className="space-y-6"
           >
-            {/* Monthly bill */}
+            {/* Electric bill */}
             <SliderField
-              label="Factură lunară medie"
-              value={monthlyBill}
-              onChange={setMonthlyBill}
-              min={200}
-              max={2000}
-              step={50}
+              label={isGas ? 'Factură electricitate (climatizare)' : 'Factură lunară medie'}
+              value={monthlyBillElectric}
+              onChange={setMonthlyBillElectric}
+              min={isGas ? 50 : 200}
+              max={isGas ? 800 : 2000}
+              step={isGas ? 25 : 50}
               unit="lei/lună"
+              hint={isGas ? 'Doar partea de răcire/AC, dacă ai' : undefined}
             />
+
+            {/* Gas bill — only for gas boiler */}
+            {isGas && (
+              <SliderField
+                label="Factură gaz natural (încălzire)"
+                value={monthlyBillGas}
+                onChange={setMonthlyBillGas}
+                min={100}
+                max={1500}
+                step={50}
+                unit="lei/lună"
+                hint="Media lunară pe sezonul rece"
+              />
+            )}
 
             {/* Electricity price */}
             <SliderField
@@ -158,7 +179,10 @@ export function StepConsumption({ systemType, onSubmit }: StepConsumptionProps) 
             <SliderField
               label="Luni răcire / an"
               value={monthsCooling}
-              onChange={setMonthsCooling}
+              onChange={(v) => {
+                setMonthsCooling(v)
+                if (v + monthsHeating > 12) setMonthsHeating(12 - v)
+              }}
               min={0}
               max={12}
               step={1}
@@ -169,19 +193,30 @@ export function StepConsumption({ systemType, onSubmit }: StepConsumptionProps) 
             <SliderField
               label="Luni încălzire / an"
               value={monthsHeating}
-              onChange={setMonthsHeating}
+              onChange={(v) => {
+                setMonthsHeating(v)
+                if (monthsCooling + v > 12) setMonthsCooling(12 - v)
+              }}
               min={0}
               max={12}
               step={1}
               unit="luni"
             />
+
+            {/* Months validation warning */}
+            {monthsError && (
+              <p className="text-center text-xs font-medium text-amber-400">
+                {monthsError}
+              </p>
+            )}
           </motion.div>
         )}
       </div>
 
       <button
         onClick={handleSubmit}
-        className="mt-10 inline-flex items-center gap-2 rounded-full bg-sky-600 px-8 py-3 font-[family-name:var(--font-display)] text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-sky-600/25 transition-all hover:bg-sky-500 hover:shadow-sky-500/30"
+        disabled={!!monthsError}
+        className="mt-10 inline-flex items-center gap-2 rounded-full bg-sky-600 px-8 py-3 font-[family-name:var(--font-display)] text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-sky-600/25 transition-all hover:bg-sky-500 hover:shadow-sky-500/30 disabled:cursor-not-allowed disabled:opacity-40"
       >
         Continuă
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -203,6 +238,7 @@ function SliderField({
   step,
   unit,
   decimals = 0,
+  hint,
 }: {
   label: string
   value: number
@@ -212,13 +248,17 @@ function SliderField({
   step: number
   unit: string
   decimals?: number
+  hint?: string
 }) {
   const percent = ((value - min) / (max - min)) * 100
 
   return (
     <div>
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-gray-300">{label}</label>
+        <div>
+          <label className="text-sm font-medium text-gray-300">{label}</label>
+          {hint && <p className="text-[11px] text-gray-500">{hint}</p>}
+        </div>
         <span className="font-[family-name:var(--font-display)] text-lg font-bold text-white">
           {decimals > 0 ? value.toFixed(decimals) : value}{' '}
           <span className="text-xs font-normal text-gray-500">{unit}</span>

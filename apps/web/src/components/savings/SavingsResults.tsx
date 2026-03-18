@@ -282,9 +282,10 @@ function BarComparison({
 function PaybackRing({ years }: { years: number }) {
   const radius = 50
   const circumference = 2 * Math.PI * radius
-  // Cap at 10 years for visual
-  const progress = Math.min(years / 10, 1)
+  // Scala vizuală: 15 ani = cerc plin (nu 10, ca să nu pară cap-at)
+  const progress = Math.min(years / 15, 1)
   const offset = circumference * (1 - progress)
+  const isLong = years > 10
 
   return (
     <div className="relative inline-flex items-center justify-center">
@@ -304,7 +305,7 @@ function PaybackRing({ years }: { years: number }) {
           cy="65"
           r={radius}
           fill="none"
-          stroke="rgb(14 165 233)"
+          stroke={isLong ? 'rgb(234 179 8)' : 'rgb(14 165 233)'}
           strokeWidth="8"
           strokeLinecap="round"
           strokeDasharray={circumference}
@@ -314,7 +315,7 @@ function PaybackRing({ years }: { years: number }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-[family-name:var(--font-display)] text-2xl font-bold text-white">
+        <span className={`font-[family-name:var(--font-display)] text-2xl font-bold ${isLong ? 'text-yellow-400' : 'text-white'}`}>
           {years}
         </span>
         <span className="text-[10px] font-medium uppercase tracking-wider text-gray-500">

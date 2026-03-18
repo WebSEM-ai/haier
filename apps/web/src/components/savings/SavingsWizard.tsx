@@ -90,6 +90,7 @@ export function SavingsWizard({ products }: SavingsWizardProps) {
         coolingCapacity: coolingCap,
         heatingCapacity: heatingCap,
         capacityKw,
+        series: product.series || undefined,
       },
     })
 
