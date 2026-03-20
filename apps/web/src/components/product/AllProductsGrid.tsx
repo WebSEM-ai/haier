@@ -1,23 +1,10 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { CategoryProductGrid } from './CategoryProductGrid'
-
-interface Product {
-  id: number
-  title: string
-  slug: string
-  modelCode: string
-  categorySlug?: string | null
-  mainImageFilename?: string | null
-  shortDescription?: string | null
-  energyClassCooling?: string | null
-  series?: string | null
-  capacity?: string | null
-  seer?: string | null
-  featured?: boolean
-  order?: number
-}
+import { ProductAdvisor } from './ProductAdvisor'
+import type { Product } from '@/lib/payload'
+import type { ScoredProduct } from '@/lib/recommendation'
 
 interface CategoryTab {
   key: string
@@ -56,54 +43,113 @@ const CATEGORY_TABS: CategoryTab[] = [
   },
 ]
 
+function isHeatPump(p: Product): boolean {
+  return p.productType === 'heat-pump' || p.categorySlug === 'pompe-caldura'
+}
+
+function isAC(p: Product): boolean {
+  return (p.productType === 'ac' || !p.productType) && !isHeatPump(p)
+}
+
 interface AllProductsGridProps {
   products: Product[]
 }
 
 export function AllProductsGrid({ products }: AllProductsGridProps) {
   const [activeCategory, setActiveCategory] = useState('all')
+  const [advisorResults, setAdvisorResults] = useState<ScoredProduct[] | null>(null)
 
   const filteredProducts = useMemo(() => {
     if (activeCategory === 'all') return products
+    if (activeCategory === 'pompe-caldura') return products.filter(isHeatPump)
+    if (activeCategory === 'climatizare') return products.filter(isAC)
     return products.filter((p) => p.categorySlug === activeCategory)
   }, [products, activeCategory])
 
+  const tabCount = useCallback(
+    (key: string) => {
+      if (key === 'all') return products.length
+      if (key === 'pompe-caldura') return products.filter(isHeatPump).length
+      if (key === 'climatizare') return products.filter(isAC).length
+      return products.filter((p) => p.categorySlug === key).length
+    },
+    [products],
+  )
+
+  const handleAdvisorResults = useCallback((scored: ScoredProduct[]) => {
+    setAdvisorResults(scored)
+  }, [])
+
+  const handleAdvisorReset = useCallback(() => {
+    setAdvisorResults(null)
+  }, [])
+
   return (
     <div>
-      {/* Category tabs */}
-      <div className="mb-8 flex flex-wrap gap-2">
-        {CATEGORY_TABS.map((tab) => {
-          const isActive = activeCategory === tab.key
-          const count =
-            tab.key === 'all'
-              ? products.length
-              : products.filter((p) => p.categorySlug === tab.key).length
-          return (
-            <button
-              key={tab.key}
-              onClick={() => setActiveCategory(tab.key)}
-              className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all ${
-                isActive
-                  ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/20'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              <span className={isActive ? 'text-sky-400' : 'text-gray-400'}>{tab.icon}</span>
-              {tab.label}
-              <span
-                className={`ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-bold ${
-                  isActive ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-500'
+      {/* Product Advisor */}
+      <ProductAdvisor
+        products={products}
+        onResults={handleAdvisorResults}
+        onReset={handleAdvisorReset}
+      />
+
+      {/* Advisor results banner */}
+      {advisorResults && (
+        <div className="mb-6 flex items-center justify-between rounded-xl border border-sky-200 bg-gradient-to-r from-sky-50 to-white px-5 py-3">
+          <div className="flex items-center gap-2">
+            <svg className="h-5 w-5 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-sm font-medium text-sky-800">
+              {advisorResults.length} produse recomandate pentru tine
+            </p>
+          </div>
+          <button
+            onClick={handleAdvisorReset}
+            className="text-sm font-medium text-sky-600 hover:text-sky-700"
+          >
+            Resetează
+          </button>
+        </div>
+      )}
+
+      {/* Category tabs — hide when advisor active */}
+      {!advisorResults && (
+        <div className="mb-8 flex flex-wrap gap-2">
+          {CATEGORY_TABS.map((tab) => {
+            const isActive = activeCategory === tab.key
+            const count = tabCount(tab.key)
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setActiveCategory(tab.key)}
+                className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all ${
+                  isActive
+                    ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/20'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                {count}
-              </span>
-            </button>
-          )
-        })}
-      </div>
+                <span className={isActive ? 'text-sky-400' : 'text-gray-400'}>{tab.icon}</span>
+                {tab.label}
+                <span
+                  className={`ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-bold ${
+                    isActive ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-500'
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       {/* Existing filter + grid */}
-      <CategoryProductGrid products={filteredProducts} />
+      <CategoryProductGrid
+        products={filteredProducts}
+        advisorResults={advisorResults}
+        activeCategory={activeCategory}
+      />
     </div>
   )
 }

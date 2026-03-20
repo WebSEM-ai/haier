@@ -2,25 +2,13 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { ProductCard } from './ProductCard'
-
-interface Product {
-  id: number
-  title: string
-  slug: string
-  modelCode: string
-  categorySlug?: string | null
-  mainImageFilename?: string | null
-  shortDescription?: string | null
-  energyClassCooling?: string | null
-  series?: string | null
-  capacity?: string | null
-  seer?: string | null
-  featured?: boolean
-  order?: number
-}
+import type { Product } from '@/lib/payload'
+import type { ScoredProduct } from '@/lib/recommendation'
 
 interface CategoryProductGridProps {
   products: Product[]
+  advisorResults?: ScoredProduct[] | null
+  activeCategory?: string
 }
 
 type SortKey = 'recommended' | 'capacity-asc' | 'efficiency'
@@ -38,6 +26,25 @@ function getRoomLabel(capacity: string): string {
   if (kw <= 5.0) return `${capacity} · ~50 m²`
   if (kw <= 7.1) return `${capacity} · ~70 m²`
   return `${capacity} · ~${Math.round(kw * 10)} m²`
+}
+
+function parseDbValue(val: string | null | undefined): number | null {
+  if (!val) return null
+  const match = val.match(/([\d.]+)/)
+  if (match) return parseFloat(match[1])
+  return null
+}
+
+function getNoiseCategory(db: number): string {
+  if (db < 30) return 'silent'
+  if (db <= 45) return 'moderate'
+  return 'normal'
+}
+
+const NOISE_LABELS: Record<string, string> = {
+  silent: 'Silențios (< 30 dB)',
+  moderate: 'Moderat (30–45 dB)',
+  normal: 'Normal (> 45 dB)',
 }
 
 // ── FilterDropdown ──────────────────────────────────────────────────────────
@@ -145,11 +152,19 @@ function FilterChip({
 
 // ── CategoryProductGrid ─────────────────────────────────────────────────────
 
-export function CategoryProductGrid({ products }: CategoryProductGridProps) {
+export function CategoryProductGrid({ products, advisorResults, activeCategory }: CategoryProductGridProps) {
   const [activeSeries, setActiveSeries] = useState<string | null>(null)
   const [activeEnergy, setActiveEnergy] = useState<string | null>(null)
   const [activeCapacity, setActiveCapacity] = useState<string | null>(null)
+  const [activeCompressor, setActiveCompressor] = useState<string | null>(null)
+  const [activeNoise, setActiveNoise] = useState<string | null>(null)
+  const [activePhase, setActivePhase] = useState<string | null>(null)
+  const [activeEnergyHeating, setActiveEnergyHeating] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortKey>('recommended')
+
+  // Determine context
+  const hasHeatPumps = products.some((p) => p.productType === 'heat-pump' || p.categorySlug === 'pompe-caldura')
+  const isPumpCategory = activeCategory === 'pompe-caldura'
 
   // Extract unique filter values
   const seriesOptions = useMemo(() => {
@@ -171,12 +186,83 @@ export function CategoryProductGrid({ products }: CategoryProductGridProps) {
     return Array.from(set).sort((a, b) => parseFloat(a) - parseFloat(b))
   }, [products])
 
+  const compressorOptions = useMemo(() => {
+    const set = new Set<string>()
+    products.forEach((p) => { if (p.compressorType) set.add(p.compressorType) })
+    return Array.from(set).sort()
+  }, [products])
+
+  const noiseOptions = useMemo(() => {
+    const categories = new Set<string>()
+    products.forEach((p) => {
+      const db = parseDbValue(p.indoorNoiseMax)
+      if (db !== null) categories.add(getNoiseCategory(db))
+    })
+    return ['silent', 'moderate', 'normal'].filter((c) => categories.has(c))
+  }, [products])
+
+  const phaseOptions = useMemo(() => {
+    const set = new Set<string>()
+    products.forEach((p) => { if (p.phase) set.add(p.phase) })
+    return Array.from(set).sort()
+  }, [products])
+
+  const energyHeatingOptions = useMemo(() => {
+    const set = new Set<string>()
+    products.forEach((p) => { if (p.energyClassHeating) set.add(p.energyClassHeating) })
+    const order = ['A+++', 'A++', 'A+', 'A', 'B', 'C', 'D']
+    return Array.from(set).sort((a, b) => order.indexOf(a) - order.indexOf(b))
+  }, [products])
+
+  // If advisor is active, show advisor results
+  if (advisorResults && advisorResults.length > 0) {
+    const advisorProductIds = new Set(advisorResults.map((r) => r.product.id))
+    const advisorProducts = products.filter((p) => advisorProductIds.has(p.id))
+    // Sort by advisor score
+    advisorProducts.sort((a, b) => {
+      const scoreA = advisorResults.find((r) => r.product.id === a.id)?.score ?? 0
+      const scoreB = advisorResults.find((r) => r.product.id === b.id)?.score ?? 0
+      return scoreB - scoreA
+    })
+
+    return (
+      <div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {advisorProducts.map((product, index) => {
+            const scored = advisorResults.find((r) => r.product.id === product.id)
+            return (
+              <div key={product.id} className="relative">
+                {scored && scored.matchReasons.length > 0 && (
+                  <div className="mb-2 flex flex-wrap gap-1">
+                    {scored.matchReasons.map((reason, i) => (
+                      <span key={i} className="rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700">
+                        {reason}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <ProductCard product={product} index={index} />
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
+
   // Filter + sort
   const filtered = useMemo(() => {
     let result = products.filter((p) => {
       if (activeSeries && p.series !== activeSeries) return false
       if (activeEnergy && p.energyClassCooling !== activeEnergy) return false
       if (activeCapacity && p.capacity !== activeCapacity) return false
+      if (activeCompressor && p.compressorType !== activeCompressor) return false
+      if (activeNoise) {
+        const db = parseDbValue(p.indoorNoiseMax)
+        if (db === null || getNoiseCategory(db) !== activeNoise) return false
+      }
+      if (activePhase && p.phase !== activePhase) return false
+      if (activeEnergyHeating && p.energyClassHeating !== activeEnergyHeating) return false
       return true
     })
 
@@ -200,17 +286,25 @@ export function CategoryProductGrid({ products }: CategoryProductGridProps) {
     }
 
     return result
-  }, [products, activeSeries, activeEnergy, activeCapacity, sortBy])
+  }, [products, activeSeries, activeEnergy, activeCapacity, activeCompressor, activeNoise, activePhase, activeEnergyHeating, sortBy])
 
   const activeFilters: { label: string; onRemove: () => void }[] = []
   if (activeSeries) activeFilters.push({ label: activeSeries, onRemove: () => setActiveSeries(null) })
   if (activeCapacity) activeFilters.push({ label: getRoomLabel(activeCapacity), onRemove: () => setActiveCapacity(null) })
-  if (activeEnergy) activeFilters.push({ label: activeEnergy, onRemove: () => setActiveEnergy(null) })
+  if (activeEnergy) activeFilters.push({ label: `Răcire: ${activeEnergy}`, onRemove: () => setActiveEnergy(null) })
+  if (activeCompressor) activeFilters.push({ label: activeCompressor, onRemove: () => setActiveCompressor(null) })
+  if (activeNoise) activeFilters.push({ label: NOISE_LABELS[activeNoise], onRemove: () => setActiveNoise(null) })
+  if (activePhase) activeFilters.push({ label: activePhase, onRemove: () => setActivePhase(null) })
+  if (activeEnergyHeating) activeFilters.push({ label: `Încălzire: ${activeEnergyHeating}`, onRemove: () => setActiveEnergyHeating(null) })
 
   const clearAll = useCallback(() => {
     setActiveSeries(null)
     setActiveEnergy(null)
     setActiveCapacity(null)
+    setActiveCompressor(null)
+    setActiveNoise(null)
+    setActivePhase(null)
+    setActiveEnergyHeating(null)
     setSortBy('recommended')
   }, [])
 
@@ -241,10 +335,50 @@ export function CategoryProductGrid({ products }: CategoryProductGridProps) {
 
           {energyOptions.length > 1 && (
             <FilterDropdown
-              label="Clasă energ."
+              label="Clasă energ. răcire"
               options={energyOptions}
               active={activeEnergy}
               onSelect={setActiveEnergy}
+            />
+          )}
+
+          {/* New filters */}
+          {compressorOptions.length > 1 && (
+            <FilterDropdown
+              label="Tip compresor"
+              options={compressorOptions}
+              active={activeCompressor}
+              onSelect={setActiveCompressor}
+            />
+          )}
+
+          {noiseOptions.length > 1 && (
+            <FilterDropdown
+              label="Nivel zgomot"
+              options={noiseOptions}
+              active={activeNoise}
+              onSelect={setActiveNoise}
+              renderLabel={(v) => NOISE_LABELS[v] || v}
+            />
+          )}
+
+          {/* Contextual filters — phase for heat pumps */}
+          {(isPumpCategory || hasHeatPumps) && phaseOptions.length > 1 && (
+            <FilterDropdown
+              label="Fază"
+              options={phaseOptions}
+              active={activePhase}
+              onSelect={setActivePhase}
+            />
+          )}
+
+          {/* Contextual — energy class heating for heat pumps or mixed */}
+          {(isPumpCategory || hasHeatPumps) && energyHeatingOptions.length > 1 && (
+            <FilterDropdown
+              label="Clasă energ. încălzire"
+              options={energyHeatingOptions}
+              active={activeEnergyHeating}
+              onSelect={setActiveEnergyHeating}
             />
           )}
 
