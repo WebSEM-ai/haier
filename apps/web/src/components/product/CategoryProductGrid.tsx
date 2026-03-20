@@ -214,41 +214,19 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
     return Array.from(set).sort((a, b) => order.indexOf(a) - order.indexOf(b))
   }, [products])
 
-  // If advisor is active, show advisor results
-  if (advisorResults && advisorResults.length > 0) {
+  const isAdvisorActive = !!(advisorResults && advisorResults.length > 0)
+
+  const advisorProducts = useMemo(() => {
+    if (!advisorResults || advisorResults.length === 0) return []
     const advisorProductIds = new Set(advisorResults.map((r) => r.product.id))
-    const advisorProducts = products.filter((p) => advisorProductIds.has(p.id))
-    // Sort by advisor score
-    advisorProducts.sort((a, b) => {
+    const matched = products.filter((p) => advisorProductIds.has(p.id))
+    matched.sort((a, b) => {
       const scoreA = advisorResults.find((r) => r.product.id === a.id)?.score ?? 0
       const scoreB = advisorResults.find((r) => r.product.id === b.id)?.score ?? 0
       return scoreB - scoreA
     })
-
-    return (
-      <div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {advisorProducts.map((product, index) => {
-            const scored = advisorResults.find((r) => r.product.id === product.id)
-            return (
-              <div key={product.id} className="relative">
-                {scored && scored.matchReasons.length > 0 && (
-                  <div className="mb-2 flex flex-wrap gap-1">
-                    {scored.matchReasons.map((reason, i) => (
-                      <span key={i} className="rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700">
-                        {reason}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                <ProductCard product={product} index={index} />
-              </div>
-            )
-          })}
-        </div>
-      </div>
-    )
-  }
+    return matched
+  }, [products, advisorResults])
 
   // Filter + sort
   const filtered = useMemo(() => {
@@ -307,6 +285,32 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
     setActiveEnergyHeating(null)
     setSortBy('recommended')
   }, [])
+
+  if (isAdvisorActive) {
+    return (
+      <div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {advisorProducts.map((product, index) => {
+            const scored = advisorResults!.find((r) => r.product.id === product.id)
+            return (
+              <div key={product.id} className="relative">
+                {scored && scored.matchReasons.length > 0 && (
+                  <div className="mb-2 flex flex-wrap gap-1">
+                    {scored.matchReasons.map((reason, i) => (
+                      <span key={i} className="rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700">
+                        {reason}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <ProductCard product={product} index={index} />
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>
