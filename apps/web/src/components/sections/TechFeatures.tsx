@@ -31,7 +31,7 @@ const tabs = [
     ],
   },
   {
-    label: 'Confort & Performanță',
+    label: 'Confort & Control',
     features: [
       {
         icon: '/images/features/wifi.webp',
@@ -49,9 +49,34 @@ const tabs = [
         title: '3D Airflow',
       },
       {
+        icon: '/images/features/silent.webp',
+        category: 'Confort',
+        title: 'Funcționare silențioasă',
+      },
+    ],
+  },
+  {
+    label: 'Eficiență & Performanță',
+    features: [
+      {
         icon: '/images/features/turbo-cool.webp',
         category: 'Eficiență',
         title: '3 Level-ECO',
+      },
+      {
+        icon: '/images/features/i-feel.webp',
+        category: 'Confort',
+        title: 'I Feel Sensor',
+      },
+      {
+        icon: '/images/features/turbo-cool.webp',
+        category: 'Performanță',
+        title: 'Mod Turbo Cooling',
+      },
+      {
+        icon: '/images/features/coanda.webp',
+        category: 'Performanță',
+        title: 'Coanda Plus',
       },
     ],
   },

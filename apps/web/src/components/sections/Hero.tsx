@@ -35,7 +35,7 @@ const slides: Slide[] = [
     subtitle: 'Tehnologia viitorului, disponibilă azi!',
     title: 'SISTEME DE',
     titleLine2: 'CLIMATIZARE',
-    cta: 'Vezi climatizatoare',
+    cta: 'Vezi aere condiționate',
     ctaLink: '/produse/climatizare',
     watermarkText: 'A+++',
     hotspots: [
