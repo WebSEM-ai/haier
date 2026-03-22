@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Container } from '@/components/ui/Container'
 import { InquiryDialog } from '@/components/product/InquiryDialog'
+import { ImageLightbox } from '@/components/product/ImageLightbox'
 import { SpecsTabs, type SpecSection } from '@/components/product/SpecsTabs'
 import { ProductFeatures } from '@/components/product/ProductFeatures'
 import { TechnologyTabs } from '@/components/product/TechnologyTabs'
@@ -218,6 +219,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
           { label: 'Putere încălzire', value: product.heatingCapacityNominal },
           { label: 'SEER', value: product.seer },
           { label: 'SCOP', value: product.scop },
+          { label: 'Dimensiuni UI', value: product.indoorDimensions },
+          { label: 'Dimensiuni UE', value: product.outdoorDimensions },
           { label: 'Agent termic', value: product.refrigerant },
           { label: 'Alimentare', value: product.powerSupply },
           { label: 'Garanție', value: product.warranty },
@@ -254,25 +257,19 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         {/* ═══ Hero: Image + Key Info ═══ */}
         <div className="grid gap-10 lg:grid-cols-2">
-          {/* Left — Image */}
+          {/* Left — Image with lightbox */}
           <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100">
-            <div className="relative aspect-[4/3]">
-              {imageUrl ? (
-                <Image
-                  src={imageUrl}
-                  alt={product.title}
-                  fill
-                  className="object-contain p-8"
-                  priority
-                />
-              ) : (
+            {imageUrl ? (
+              <ImageLightbox src={imageUrl} alt={product.title} />
+            ) : (
+              <div className="relative aspect-[4/3]">
                 <div className="flex h-full items-center justify-center">
                   <svg className="h-24 w-24 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Right — Product info + key specs */}
@@ -283,8 +280,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </p>
             )}
 
-            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">{product.title}</h1>
-            <p className="mt-1 text-sm text-gray-400">Cod: {product.modelCode}</p>
+            <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">{product.title}</h1>
+            <p className="mt-2 text-sm text-gray-400">Cod: {product.modelCode}</p>
 
             {/* Energy labels */}
             {isHeatPump ? (
@@ -317,11 +314,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
             {/* Key specs — compact table */}
             {keySpecs.length > 0 && (
-              <dl className="mt-6 divide-y divide-gray-100 rounded-xl border border-gray-100 bg-white">
+              <dl className="mt-6 divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white shadow-sm">
                 {keySpecs.map((spec) => (
-                  <div key={spec.label} className="flex items-center justify-between px-4 py-2.5">
-                    <dt className="text-sm text-gray-500">{spec.label}</dt>
-                    <dd className="text-sm font-semibold text-gray-900">{spec.value}</dd>
+                  <div key={spec.label} className="flex items-center justify-between px-5 py-3">
+                    <dt className="text-base text-gray-600">{spec.label}</dt>
+                    <dd className="text-base font-bold text-gray-900">{spec.value}</dd>
                   </div>
                 ))}
               </dl>
@@ -342,10 +339,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 ].map((f) => (
                   <div
                     key={f.title}
-                    className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-50 ring-1 ring-gray-100"
+                    className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-50 ring-1 ring-gray-200"
                     title={f.title}
                   >
-                    <Image src={f.icon} alt={f.title} width={24} height={24} className="h-6 w-6 object-contain" />
+                    <Image src={f.icon} alt={f.title} width={28} height={28} className="h-7 w-7 object-contain" />
                   </div>
                 ))}
               </div>

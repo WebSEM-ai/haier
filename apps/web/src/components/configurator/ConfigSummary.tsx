@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { InquiryDialog } from '@/components/product/InquiryDialog'
 import { R2_PUBLIC_URL } from '@/lib/constants'
 import type { SpaceType, RoomConfig, ThermalResult, ScoredProduct } from '@/lib/room-calculator'
 
@@ -46,6 +45,51 @@ export function ConfigSummary({
   onBack,
   onReset,
 }: ConfigSummaryProps) {
+  const [formName, setFormName] = useState('')
+  const [formEmail, setFormEmail] = useState('')
+  const [formPhone, setFormPhone] = useState('')
+  const [formSubmitting, setFormSubmitting] = useState(false)
+  const [formSuccess, setFormSuccess] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
+
+  async function handleSubmitConfig(e: React.FormEvent) {
+    e.preventDefault()
+    if (!formName || !formEmail || !formPhone) return
+    setFormSubmitting(true)
+    setFormError(null)
+
+    // Build configuration summary text
+    const roomsSummary = rooms.map((r) =>
+      `${r.name}: ${r.area.toFixed(1)} m², ${r.thermalKw?.toFixed(2) || '?'} kW`
+    ).join('\n')
+    const productsSummary = selectedProducts.map((sp) =>
+      `${sp.product.title} (${sp.product.capacity || sp.product.heatingCapacityNominal || ''})`
+    ).join(', ')
+
+    const message = `CONFIGURAȚIE TRIMISĂ DIN CONFIGURATOR\n\nTip spațiu: ${SPACE_LABELS[spaceType]}\nPutere totală necesară: ${thermalResult.totalRequiredKw.toFixed(1)} kW\n\nCamere:\n${roomsSummary}\n\nProduse recomandate: ${productsSummary}`
+
+    try {
+      const res = await fetch('/api/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formName,
+          email: formEmail,
+          phone: formPhone,
+          message,
+          productId: selectedProducts[0]?.product?.id || null,
+          productTitle: selectedProducts.map((sp) => sp.product.title).join(', '),
+        }),
+      })
+      if (!res.ok) throw new Error('Eroare la trimitere')
+      setFormSuccess(true)
+    } catch {
+      setFormError('A apărut o eroare. Te rugăm să încerci din nou.')
+    } finally {
+      setFormSubmitting(false)
+    }
+  }
+
   return (
     <div className="mx-auto max-w-4xl">
       {/* Header */}
@@ -202,33 +246,73 @@ export function ConfigSummary({
         </div>
       </motion.div>
 
-      {/* Main CTA */}
+      {/* Main CTA — inline form */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="rounded-2xl border border-sky-500/20 bg-gradient-to-b from-sky-500/10 to-transparent p-8 text-center"
+        className="rounded-2xl border border-sky-500/20 bg-gradient-to-b from-sky-500/10 to-transparent p-8"
       >
-        <h3 className="font-display text-lg font-bold text-white">
-          Dorești o ofertă personalizată?
-        </h3>
-        <p className="mt-2 text-sm text-gray-400">
-          Trimite configurația ta și primești ofertă detaliată cu preț, montaj și garanție
-        </p>
-        <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          {selectedProducts[0]?.product && (
-            <InquiryDialog product={selectedProducts[0].product} />
-          )}
-          <Link
-            href="/cerere-oferta"
-            className="flex items-center justify-center gap-2 rounded-xl border border-white/10 px-6 py-3 text-sm font-medium text-gray-300 transition-colors hover:border-white/20 hover:bg-white/5 hover:text-white"
-          >
-            Formular complet
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
-        </div>
+        {formSuccess ? (
+          <div className="text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-500/10 ring-1 ring-green-500/30">
+              <svg className="h-7 w-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="font-display text-lg font-bold text-white">Configurația a fost trimisă!</h3>
+            <p className="mt-2 text-sm text-gray-400">
+              Vei primi un email de confirmare. Echipa noastră te va contacta cu oferta detaliată.
+            </p>
+          </div>
+        ) : (
+          <>
+            <h3 className="text-center font-display text-lg font-bold text-white">
+              Trimite configurația pentru ofertă
+            </h3>
+            <p className="mt-2 text-center text-sm text-gray-400">
+              Completează datele și primești ofertă detaliată cu preț, montaj și garanție
+            </p>
+            <form onSubmit={handleSubmitConfig} className="mt-6 grid gap-4 sm:grid-cols-3">
+              <input
+                type="text"
+                placeholder="Nume complet *"
+                value={formName}
+                onChange={(e) => setFormName(e.target.value)}
+                required
+                className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+              />
+              <input
+                type="email"
+                placeholder="Email *"
+                value={formEmail}
+                onChange={(e) => setFormEmail(e.target.value)}
+                required
+                className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+              />
+              <input
+                type="tel"
+                placeholder="Telefon *"
+                value={formPhone}
+                onChange={(e) => setFormPhone(e.target.value)}
+                required
+                className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+              />
+              {formError && (
+                <p className="text-sm text-red-400 sm:col-span-3">{formError}</p>
+              )}
+              <div className="sm:col-span-3">
+                <button
+                  type="submit"
+                  disabled={formSubmitting}
+                  className="w-full rounded-xl bg-sky-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-600/25 transition-all hover:bg-sky-500 disabled:opacity-50"
+                >
+                  {formSubmitting ? 'Se trimite...' : 'Trimite configurația'}
+                </button>
+              </div>
+            </form>
+          </>
+        )}
       </motion.div>
 
       {/* Action buttons */}
