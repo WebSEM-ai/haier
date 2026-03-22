@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { StepSpaceType } from './StepSpaceType'
@@ -47,15 +47,54 @@ function getStepNumber(step: Step): string {
   }
 }
 
+type ProductTypeChoice = 'ac' | 'heat-pump'
+
+const STORAGE_KEY = 'haier-configurator'
+
 export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
   const [step, setStep] = useState<Step>('space-type')
   const [direction, setDirection] = useState(1)
+  const [productTypeChoice, setProductTypeChoice] = useState<ProductTypeChoice>('ac')
 
   const [spaceType, setSpaceType] = useState<SpaceType | null>(null)
   const [rooms, setRooms] = useState<RoomConfig[]>([])
   const [thermalResult, setThermalResult] = useState<ThermalResult | null>(null)
   const [scoredProducts, setScoredProducts] = useState<ScoredProduct[]>([])
   const [selectedProducts, setSelectedProducts] = useState<ScoredProduct[]>([])
+
+  // Restore saved rooms from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY)
+      if (saved) {
+        const data = JSON.parse(saved)
+        if (data.rooms?.length) setRooms(data.rooms)
+        if (data.spaceType) setSpaceType(data.spaceType)
+        if (data.productType) setProductTypeChoice(data.productType)
+      }
+    } catch { /* ignore */ }
+  }, [])
+
+  // Save rooms to localStorage on change
+  useEffect(() => {
+    if (rooms.length > 0) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          rooms,
+          spaceType,
+          productType: productTypeChoice,
+        }))
+      } catch { /* ignore */ }
+    }
+  }, [rooms, spaceType, productTypeChoice])
+
+  // Filter products by chosen type
+  const filteredProducts = products.filter((p) => {
+    if (productTypeChoice === 'heat-pump') {
+      return p.productType === 'heat-pump' || p.categorySlug === 'pompe-caldura'
+    }
+    return !p.productType || p.productType === 'ac'
+  })
 
   const stepIndex = getStepIndex(step)
 
@@ -82,8 +121,8 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
     const thermal = calculateTotalThermal(finalRooms, spaceType!)
     setThermalResult(thermal)
 
-    // Score products for total requirement
-    const scored = scoreProductsForTotal(products, thermal.totalRequiredKw, spaceType!)
+    // Score products for total requirement (filtered by AC or heat pump)
+    const scored = scoreProductsForTotal(filteredProducts, thermal.totalRequiredKw, spaceType!)
     setScoredProducts(scored)
     goTo('results')
   }
@@ -109,6 +148,7 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
     setSelectedProducts([])
     setDirection(-1)
     setStep('space-type')
+    try { localStorage.removeItem(STORAGE_KEY) } catch { /* ignore */ }
   }
 
   const slideVariants = {
@@ -185,13 +225,46 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
             transition={{ type: 'spring', stiffness: 200, damping: 25 }}
           >
             {step === 'space-type' && (
-              <StepSpaceType onSelect={handleSpaceType} />
+              <div>
+                {/* Product type toggle */}
+                <div className="mx-auto mb-10 flex max-w-md items-center justify-center">
+                  <div className="flex rounded-xl border border-white/10 bg-white/5 p-1">
+                    <button
+                      onClick={() => setProductTypeChoice('ac')}
+                      className={`flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-all ${
+                        productTypeChoice === 'ac'
+                          ? 'bg-sky-600 text-white shadow-lg shadow-sky-600/25'
+                          : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                      </svg>
+                      Aer condiționat
+                    </button>
+                    <button
+                      onClick={() => setProductTypeChoice('heat-pump')}
+                      className={`flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-all ${
+                        productTypeChoice === 'heat-pump'
+                          ? 'bg-sky-600 text-white shadow-lg shadow-sky-600/25'
+                          : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+                      </svg>
+                      Pompă de căldură
+                    </button>
+                  </div>
+                </div>
+                <StepSpaceType onSelect={handleSpaceType} />
+              </div>
             )}
             {step === 'room-config' && spaceType && (
               <StepRoomConfig
                 spaceType={spaceType}
                 initialRooms={rooms}
-                products={products}
+                products={filteredProducts}
                 onRoomsChange={handleRoomsChange}
                 onComplete={handleConfigComplete}
                 onBack={() => { setDirection(-1); setStep('space-type') }}
