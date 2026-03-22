@@ -125,7 +125,7 @@ export default function ContactPage() {
 
             {/* Trust badges */}
             <div className="mt-8 flex flex-wrap gap-4">
-              <TrustBadge icon="5" label="ani garanție" />
+              <TrustBadge icon="36" label="luni garanție" />
               <TrustBadge icon="24" label="ore răspuns" />
               <TrustBadge icon="A+++" label="eficiență" />
             </div>
@@ -157,7 +157,7 @@ export default function ContactPage() {
               />
               <InfoRow
                 title="Garanție extinsă"
-                description="5 ani garanție standard, montaj profesional și suport dedicat"
+                description="36 luni garanție standard + 2 ani extra contra cost, montaj profesional și suport dedicat"
               />
             </div>
           </div>

@@ -219,7 +219,7 @@ export function Results({ results, onReset }: ResultsProps) {
               <ComparisonRow label="Clasă răcire" values={results.map((r) => r.product.energyClassCooling || '—')} />
               <ComparisonRow label="Clasă încălzire" values={results.map((r) => r.product.energyClassHeating || '—')} />
               <ComparisonRow label="Zgomot interior" values={results.map((r) => r.product.indoorNoiseMax || r.product.soundPowerLevel || '—')} />
-              <ComparisonRow label="Serie" values={results.map((r) => r.product.series || '—')} />
+              <ComparisonRow label="Model" values={results.map((r) => r.product.series || '—')} />
             </tbody>
           </table>
         </motion.div>

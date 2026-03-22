@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import Image from 'next/image'
 import { Container } from '@/components/ui/Container'
 import { AllProductsGrid } from '@/components/product/AllProductsGrid'
@@ -52,7 +53,9 @@ export default async function ProdusePage() {
       {/* Products grid */}
       <div className="py-12">
         <Container>
-          <AllProductsGrid products={products} />
+          <Suspense fallback={null}>
+            <AllProductsGrid products={products} />
+          </Suspense>
         </Container>
       </div>
     </div>

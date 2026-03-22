@@ -309,8 +309,8 @@ export function scoreProductsForRoom(
       const series = (product.series || '').toLowerCase()
       if (series.includes('pearl premium') || series.includes('pearl plus')) {
         totalScore += 10
-        if (!reasons.some((r) => r.includes('Serie'))) {
-          reasons.push(`Seria ${product.series} — design premium`)
+        if (!reasons.some((r) => r.includes('Model'))) {
+          reasons.push(`Modelul ${product.series} — design premium`)
         }
       }
 
@@ -327,7 +327,7 @@ export function scoreProductsForRoom(
     return {
       product,
       score: 10,
-      matchReasons: [product.series ? `Seria ${product.series}` : 'Produs Haier'],
+      matchReasons: [product.series ? `Modelul ${product.series}` : 'Produs Haier'],
       coveragePercent: 0,
     }
   })
@@ -417,7 +417,7 @@ export function scoreProductsForTotal(
     return {
       product,
       score: 10,
-      matchReasons: [product.series ? `Seria ${product.series}` : 'Produs Haier'],
+      matchReasons: [product.series ? `Modelul ${product.series}` : 'Produs Haier'],
       coveragePercent: 0,
     }
   })

@@ -71,6 +71,16 @@ export function Footer() {
                   Climatizare
                 </Link>
               </li>
+              <li>
+                <Link href="/produse/pompe-caldura" className="text-sm text-gray-400 transition-colors hover:text-sky-400">
+                  Pompe de căldură
+                </Link>
+              </li>
+              <li>
+                <Link href="/cerere-oferta" className="text-sm text-gray-400 transition-colors hover:text-sky-400">
+                  Cerere ofertă
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -86,9 +96,29 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/cerere-oferta" className="text-sm text-gray-400 transition-colors hover:text-sky-400">
-                  Cerere ofertă
+                <Link href="/despre" className="text-sm text-gray-400 transition-colors hover:text-sky-400">
+                  Despre companie
                 </Link>
+              </li>
+              <li>
+                <Link href="/termeni-conditii" className="text-sm text-gray-400 transition-colors hover:text-sky-400">
+                  Termeni și condiții
+                </Link>
+              </li>
+              <li>
+                <Link href="/politica-confidentialitate" className="text-sm text-gray-400 transition-colors hover:text-sky-400">
+                  Politica de confidențialitate (GDPR)
+                </Link>
+              </li>
+              <li>
+                <Link href="/retur-reclamatii" className="text-sm text-gray-400 transition-colors hover:text-sky-400">
+                  Retur și reclamații
+                </Link>
+              </li>
+              <li>
+                <a href="https://anpc.ro" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-400 transition-colors hover:text-sky-400">
+                  ANPC
+                </a>
               </li>
             </ul>
           </div>

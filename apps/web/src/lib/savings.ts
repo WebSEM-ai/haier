@@ -1,6 +1,6 @@
 // ── Types ────────────────────────────────────────────────────────────────────
 
-export type SystemType = 'ac' | 'gas-boiler' | 'electric' | 'none'
+export type SystemType = 'ac' | 'gas-boiler' | 'electric' | 'wood-pellet' | 'other' | 'none'
 export type SystemAge = '<5' | '5-10' | '10-15' | '>15'
 export type ConsumptionMode = 'bill' | 'estimate'
 
@@ -198,6 +198,20 @@ function getOldSystemData(
           gasKwh: 0,
         }
       }
+      case 'wood-pellet':
+      case 'other': {
+        // Tratăm similar cu electric — COP ~1.0 pt sisteme neeficiente
+        const annualKwh = (consumption.monthlyBillElectric / consumption.electricityPrice) * 12
+        const coolingRatio = DEFAULTS.coolingHours / (DEFAULTS.coolingHours + DEFAULTS.heatingHours)
+        return {
+          thermalDemand: {
+            coolingKwh: annualKwh * coolingRatio,
+            heatingKwh: annualKwh * (1 - coolingRatio),
+          },
+          electricKwh: annualKwh,
+          gasKwh: 0,
+        }
+      }
       case 'none':
         return { thermalDemand: { coolingKwh: 0, heatingKwh: 0 }, electricKwh: 0, gasKwh: 0 }
     }
@@ -233,6 +247,8 @@ function getOldSystemData(
       }
     }
     case 'electric':
+    case 'wood-pellet':
+    case 'other':
       // COP = 1.0 → consumul electric = cererea termică
       return {
         thermalDemand,

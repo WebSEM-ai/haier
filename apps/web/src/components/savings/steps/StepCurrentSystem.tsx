@@ -11,7 +11,7 @@ interface StepCurrentSystemProps {
 const SYSTEM_OPTIONS: { type: SystemType; label: string; desc: string; icon: React.ReactNode; hasAge: boolean }[] = [
   {
     type: 'ac',
-    label: 'AC vechi',
+    label: 'Aer condiționat',
     desc: 'Aer condiționat existent',
     hasAge: true,
     icon: (
@@ -39,6 +39,28 @@ const SYSTEM_OPTIONS: { type: SystemType; label: string; desc: string; icon: Rea
     icon: (
       <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+      </svg>
+    ),
+  },
+  {
+    type: 'wood-pellet',
+    label: 'Centrală pe lemne/peleți',
+    desc: 'Încălzire cu combustibil solid',
+    hasAge: true,
+    icon: (
+      <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+      </svg>
+    ),
+  },
+  {
+    type: 'other',
+    label: 'Altele',
+    desc: 'Alt tip de sistem',
+    hasAge: false,
+    icon: (
+      <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
   },
@@ -82,7 +104,7 @@ export function StepCurrentSystem({ onSelect }: StepCurrentSystemProps) {
   return (
     <div className="mx-auto max-w-2xl text-center">
       <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-white sm:text-3xl">
-        Ce sistem de climatizare ai acum?
+        Ce sistem de încălzire/climatizare ai acum?
       </h2>
       <p className="mt-3 text-gray-400">
         Selectează tipul de sistem pe care îl folosești în prezent
@@ -133,7 +155,7 @@ export function StepCurrentSystem({ onSelect }: StepCurrentSystemProps) {
       </div>
 
       {/* Age sub-options */}
-      {selectedType && (selectedType === 'ac' || selectedType === 'gas-boiler') && (
+      {selectedType && (selectedType === 'ac' || selectedType === 'gas-boiler' || selectedType === 'wood-pellet') && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -141,7 +163,7 @@ export function StepCurrentSystem({ onSelect }: StepCurrentSystemProps) {
           className="mt-8"
         >
           <p className="mb-4 text-sm text-gray-400">
-            Câți ani are {selectedType === 'ac' ? 'aerul condiționat' : 'centrala pe gaz'}?
+            Câți ani are {selectedType === 'ac' ? 'aerul condiționat' : selectedType === 'gas-boiler' ? 'centrala pe gaz' : 'centrala pe lemne/peleți'}?
           </p>
           <div className="mx-auto flex max-w-md flex-wrap justify-center gap-2">
             {AGE_OPTIONS.map((opt) => (

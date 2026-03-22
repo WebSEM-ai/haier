@@ -73,7 +73,7 @@ export function SavingsResults({ result, product, onResetProduct, onResetAll }: 
             </h3>
             <div className="mt-4 space-y-3">
               <BarComparison
-                label="Sistem vechi"
+                label="Sistem actual"
                 value={result.oldAnnualKwh}
                 maxValue={Math.max(result.oldAnnualKwh, result.newAnnualKwh)}
                 unit="kWh"
@@ -98,7 +98,7 @@ export function SavingsResults({ result, product, onResetProduct, onResetAll }: 
             </h3>
             <div className="mt-4 space-y-3">
               <BarComparison
-                label="Sistem vechi"
+                label="Sistem actual"
                 value={result.oldMonthlyCost}
                 maxValue={Math.max(result.oldMonthlyCost, result.newMonthlyCost)}
                 unit="lei"

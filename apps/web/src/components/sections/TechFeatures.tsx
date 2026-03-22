@@ -9,24 +9,24 @@ const tabs = [
     label: 'Purificare & Igienă',
     features: [
       {
+        icon: '/images/features/uvc-pro.webp',
+        category: 'Purificarea aerului',
+        title: 'UVC Pro',
+      },
+      {
         icon: '/images/features/self-purify.webp',
         category: 'Purificarea aerului',
         title: 'Self Purify | Filtru IFD',
       },
       {
-        icon: '/images/features/uvc-pro.webp',
-        category: 'Purificarea aerului',
-        title: 'Sterilizare UV-C PRO',
+        icon: '/images/features/self-clean.webp',
+        category: 'Igienă',
+        title: '56℃ Steri-Clean',
       },
       {
         icon: '/images/features/self-clean.webp',
         category: 'Curățarea aparatului',
         title: 'Self Clean',
-      },
-      {
-        icon: '/images/features/wifi.webp',
-        category: 'Control',
-        title: 'Wi-Fi',
       },
     ],
   },
@@ -34,9 +34,9 @@ const tabs = [
     label: 'Confort & Performanță',
     features: [
       {
-        icon: '/images/features/coanda.webp',
-        category: 'Confort',
-        title: 'Coanda Plus',
+        icon: '/images/features/wifi.webp',
+        category: 'Control',
+        title: 'Wi-Fi Standard',
       },
       {
         icon: '/images/features/i-feel.webp',
@@ -44,14 +44,14 @@ const tabs = [
         title: 'I FEEL',
       },
       {
-        icon: '/images/features/turbo-cool.webp',
+        icon: '/images/features/coanda.webp',
         category: 'Confort',
-        title: 'Mod Turbo Cooling',
+        title: '3D Airflow',
       },
       {
-        icon: '/images/features/silent.webp',
-        category: 'Confort',
-        title: 'Funcționare silențioasă',
+        icon: '/images/features/turbo-cool.webp',
+        category: 'Eficiență',
+        title: '3 Level-ECO',
       },
     ],
   },

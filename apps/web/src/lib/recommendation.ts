@@ -241,7 +241,7 @@ function scoreSeries(product: Product, weight: number): { score: number; reason:
 
   if (isPremium) {
     const s = Math.round(15 * weight / 3)
-    const reason = weight >= 2 ? `Seria ${product.series} — design premium` : null
+    const reason = weight >= 2 ? `Modelul ${product.series} — design premium` : null
     return { score: s, reason }
   }
 
@@ -328,7 +328,7 @@ export function scoreProducts(products: Product[], answers: WizardAnswers): Scor
 
     // Ensure at least one reason
     if (reasons.length === 0) {
-      if (product.series) reasons.push(`Seria ${product.series}`)
+      if (product.series) reasons.push(`Modelul ${product.series}`)
       if (product.capacity) reasons.push(`Capacitate ${product.capacity}`)
     }
 

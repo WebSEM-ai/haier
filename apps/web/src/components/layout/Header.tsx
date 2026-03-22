@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { AnimatePresence } from 'framer-motion'
 import * as Dialog from '@radix-ui/react-dialog'
 import { MobileNav } from './MobileNav'
@@ -18,9 +18,13 @@ export function Header({ categories }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeMenuKey, setActiveMenuKey] = useState<string | null>(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const pathname = usePathname()
+  const router = useRouter()
   const isHome = pathname === '/'
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   // Scroll listener
   useEffect(() => {
@@ -109,6 +113,20 @@ export function Header({ categories }: HeaderProps) {
 
         {/* Right side */}
         <div className="hidden items-center gap-2 lg:flex">
+          {/* Search */}
+          <button
+            onClick={() => {
+              setSearchOpen(true)
+              setTimeout(() => searchInputRef.current?.focus(), 100)
+            }}
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
+            aria-label="Caută produse"
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </button>
+
           {/* Configurator CTA */}
           <Link
             href="/configurator"
@@ -161,6 +179,67 @@ export function Header({ categories }: HeaderProps) {
 
       {/* Desktop Hamburger Drawer */}
       <HamburgerDrawer open={drawerOpen} onOpenChange={setDrawerOpen} />
+
+      {/* Search overlay */}
+      <AnimatePresence>
+        {searchOpen && (
+          <div className="fixed inset-0 z-[70] flex items-start justify-center pt-24">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setSearchOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="relative w-full max-w-xl"
+            >
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  if (searchQuery.trim()) {
+                    router.push(`/produse?q=${encodeURIComponent(searchQuery.trim())}`)
+                    setSearchOpen(false)
+                    setSearchQuery('')
+                  }
+                }}
+                className="relative"
+              >
+                <svg className="absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Caută produse, modele, serii..."
+                  className="w-full rounded-2xl border-0 bg-white py-4 pl-14 pr-14 text-lg text-gray-900 shadow-2xl placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                      setSearchOpen(false)
+                      setSearchQuery('')
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => { setSearchOpen(false); setSearchQuery('') }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </header>
   )
 }

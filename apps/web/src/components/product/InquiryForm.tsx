@@ -12,7 +12,8 @@ interface InquiryFormProps {
 }
 
 interface FormData {
-  name: string
+  lastName: string
+  firstName: string
   email: string
   phone: string
   message: string
@@ -42,7 +43,12 @@ export function InquiryForm({ product, products }: InquiryFormProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...data,
+          name: `${data.lastName} ${data.firstName}`,
+          lastName: data.lastName,
+          firstName: data.firstName,
+          email: data.email,
+          phone: data.phone,
+          message: data.message,
           productId: activeProduct?.id || null,
           productTitle: activeProduct?.title || null,
         }),
@@ -88,9 +94,9 @@ export function InquiryForm({ product, products }: InquiryFormProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </motion.div>
-          <h3 className="text-lg font-semibold text-green-900">Cerere trimisă cu succes!</h3>
+          <h3 className="text-lg font-semibold text-green-900">Solicitarea ta a fost înregistrată!</h3>
           <p className="mt-2 text-green-700">
-            Te vom contacta în cel mai scurt timp posibil.
+            Îți mulțumim! Vei primi un email de confirmare, iar echipa noastră te va contacta în cel mai scurt timp posibil.
           </p>
           <button
             onClick={() => setIsSuccess(false)}
@@ -154,28 +160,52 @@ export function InquiryForm({ product, products }: InquiryFormProps) {
             </div>
           )}
 
-          {/* Name */}
-          <div>
-            <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-gray-700">
-              Nume complet *
-            </label>
-            <div className="relative">
-              <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                </svg>
-              </span>
-              <input
-                id="name"
-                type="text"
-                {...register('name', { required: 'Numele este obligatoriu' })}
-                className="w-full rounded-lg border border-gray-300 py-3 pl-11 pr-4 text-gray-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
-                placeholder="Ion Popescu"
-              />
+          {/* Nume / Prenume */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="lastName" className="mb-1.5 block text-sm font-medium text-gray-700">
+                Nume *
+              </label>
+              <div className="relative">
+                <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
+                </span>
+                <input
+                  id="lastName"
+                  type="text"
+                  {...register('lastName', { required: 'Numele este obligatoriu' })}
+                  className="w-full rounded-lg border border-gray-300 py-3 pl-11 pr-4 text-gray-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                  placeholder="Popescu"
+                />
+              </div>
+              {errors.lastName && (
+                <p className="mt-1 text-sm text-red-600">{errors.lastName.message}</p>
+              )}
             </div>
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-            )}
+            <div>
+              <label htmlFor="firstName" className="mb-1.5 block text-sm font-medium text-gray-700">
+                Prenume *
+              </label>
+              <div className="relative">
+                <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
+                </span>
+                <input
+                  id="firstName"
+                  type="text"
+                  {...register('firstName', { required: 'Prenumele este obligatoriu' })}
+                  className="w-full rounded-lg border border-gray-300 py-3 pl-11 pr-4 text-gray-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                  placeholder="Ion"
+                />
+              </div>
+              {errors.firstName && (
+                <p className="mt-1 text-sm text-red-600">{errors.firstName.message}</p>
+              )}
+            </div>
           </div>
 
           {/* Email */}

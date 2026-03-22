@@ -54,11 +54,13 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // 2. Trimite email de notificare (doar dacă Resend e configurat)
+    // 2. Trimite email-uri (doar dacă Resend e configurat)
     if (process.env.RESEND_API_KEY) {
       try {
         const { Resend } = await import('resend')
         const resend = new Resend(process.env.RESEND_API_KEY)
+
+        // Email notificare către echipă
         await resend.emails.send({
           from: 'Haier România <noreply@haier.ro>',
           to: CONTACT_EMAIL,
@@ -72,6 +74,27 @@ export async function POST(req: NextRequest) {
             ${data.message ? `<p><strong>Mesaj:</strong></p><p>${escapeHtml(data.message)}</p>` : ''}
             <hr>
             <p><small>Această cerere a fost trimisă prin site-ul Haier România.</small></p>
+          `,
+        })
+
+        // Email confirmare către client
+        await resend.emails.send({
+          from: 'Haier România <noreply@haier.ro>',
+          to: data.email,
+          subject: 'Confirmare cerere ofertă — Haier România',
+          html: `
+            <h2>Îți mulțumim pentru cererea ta!</h2>
+            <p>Dragă ${escapeHtml(data.name)},</p>
+            <p>Am primit cererea ta de ofertă${data.productTitle ? ` pentru <strong>${escapeHtml(data.productTitle)}</strong>` : ''} și echipa noastră o va analiza în cel mai scurt timp.</p>
+            <p>Un consultant Haier te va contacta pentru a-ți oferi cea mai bună soluție.</p>
+            <br>
+            <p><strong>Detaliile cererii tale:</strong></p>
+            <p>Nume: ${escapeHtml(data.name)}</p>
+            <p>Telefon: ${escapeHtml(data.phone)}</p>
+            ${data.productTitle ? `<p>Produs solicitat: ${escapeHtml(data.productTitle)}</p>` : ''}
+            ${data.message ? `<p>Mesajul tău: ${escapeHtml(data.message)}</p>` : ''}
+            <br>
+            <p>Cu stimă,<br>Echipa Haier România</p>
           `,
         })
       } catch (emailError) {

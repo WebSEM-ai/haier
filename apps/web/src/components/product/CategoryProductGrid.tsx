@@ -11,21 +11,23 @@ interface CategoryProductGridProps {
   activeCategory?: string
 }
 
-type SortKey = 'recommended' | 'capacity-asc' | 'efficiency'
+function kwToBtu(kw: number): number {
+  return Math.round(kw * 3412)
+}
 
-const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-  { value: 'recommended', label: 'Recomandate' },
-  { value: 'capacity-asc', label: 'Putere crescătoare' },
-  { value: 'efficiency', label: 'Eficiență maximă' },
-]
-
-function getRoomLabel(capacity: string): string {
+function getBtuLabel(capacity: string): string {
   const kw = parseFloat(capacity)
-  if (kw <= 2.5) return `${capacity} · ~25 m²`
-  if (kw <= 3.5) return `${capacity} · ~35 m²`
-  if (kw <= 5.0) return `${capacity} · ~50 m²`
-  if (kw <= 7.1) return `${capacity} · ~70 m²`
-  return `${capacity} · ~${Math.round(kw * 10)} m²`
+  const btu = kwToBtu(kw)
+  if (kw <= 2.5) return `~${(btu / 1000).toFixed(0)},000 BTU · <25 m²`
+  if (kw <= 3.5) return `~${(btu / 1000).toFixed(0)},000 BTU · 25-35 m²`
+  if (kw <= 5.0) return `~${(btu / 1000).toFixed(0)},000 BTU · 35-50 m²`
+  if (kw <= 7.1) return `~${(btu / 1000).toFixed(0)},000 BTU · 50-70 m²`
+  return `~${(btu / 1000).toFixed(0)},000 BTU · ~${Math.round(kw * 10)} m²`
+}
+
+const PHASE_LABELS: Record<string, string> = {
+  mono: 'Monofazic (230V)',
+  tri: 'Trifazat (400V)',
 }
 
 function parseDbValue(val: string | null | undefined): number | null {
@@ -160,7 +162,7 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
   const [activeNoise, setActiveNoise] = useState<string | null>(null)
   const [activePhase, setActivePhase] = useState<string | null>(null)
   const [activeEnergyHeating, setActiveEnergyHeating] = useState<string | null>(null)
-  const [sortBy, setSortBy] = useState<SortKey>('recommended')
+  const [activeRefrigerant, setActiveRefrigerant] = useState<string | null>(null)
 
   // Determine context
   const hasHeatPumps = products.some((p) => p.productType === 'heat-pump' || p.categorySlug === 'pompe-caldura')
@@ -214,6 +216,12 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
     return Array.from(set).sort((a, b) => order.indexOf(a) - order.indexOf(b))
   }, [products])
 
+  const refrigerantOptions = useMemo(() => {
+    const set = new Set<string>()
+    products.forEach((p) => { if (p.refrigerant) set.add(p.refrigerant) })
+    return Array.from(set).sort()
+  }, [products])
+
   const isAdvisorActive = !!(advisorResults && advisorResults.length > 0)
 
   const advisorProducts = useMemo(() => {
@@ -241,39 +249,29 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
       }
       if (activePhase && p.phase !== activePhase) return false
       if (activeEnergyHeating && p.energyClassHeating !== activeEnergyHeating) return false
+      if (activeRefrigerant && p.refrigerant !== activeRefrigerant) return false
       return true
     })
 
-    switch (sortBy) {
-      case 'capacity-asc':
-        result = [...result].sort(
-          (a, b) => parseFloat(a.capacity || '0') - parseFloat(b.capacity || '0')
-        )
-        break
-      case 'efficiency':
-        result = [...result].sort(
-          (a, b) => parseFloat(b.seer || '0') - parseFloat(a.seer || '0')
-        )
-        break
-      default:
-        result = [...result].sort((a, b) => {
-          if (a.featured && !b.featured) return -1
-          if (!a.featured && b.featured) return 1
-          return (a.order || 0) - (b.order || 0)
-        })
-    }
+    // Default sort: featured first, then by order
+    result = [...result].sort((a, b) => {
+      if (a.featured && !b.featured) return -1
+      if (!a.featured && b.featured) return 1
+      return (a.order || 0) - (b.order || 0)
+    })
 
     return result
-  }, [products, activeSeries, activeEnergy, activeCapacity, activeCompressor, activeNoise, activePhase, activeEnergyHeating, sortBy])
+  }, [products, activeSeries, activeEnergy, activeCapacity, activeCompressor, activeNoise, activePhase, activeEnergyHeating, activeRefrigerant])
 
   const activeFilters: { label: string; onRemove: () => void }[] = []
   if (activeSeries) activeFilters.push({ label: activeSeries, onRemove: () => setActiveSeries(null) })
-  if (activeCapacity) activeFilters.push({ label: getRoomLabel(activeCapacity), onRemove: () => setActiveCapacity(null) })
+  if (activeCapacity) activeFilters.push({ label: getBtuLabel(activeCapacity), onRemove: () => setActiveCapacity(null) })
   if (activeEnergy) activeFilters.push({ label: `Răcire: ${activeEnergy}`, onRemove: () => setActiveEnergy(null) })
   if (activeCompressor) activeFilters.push({ label: activeCompressor, onRemove: () => setActiveCompressor(null) })
   if (activeNoise) activeFilters.push({ label: NOISE_LABELS[activeNoise], onRemove: () => setActiveNoise(null) })
-  if (activePhase) activeFilters.push({ label: activePhase, onRemove: () => setActivePhase(null) })
+  if (activePhase) activeFilters.push({ label: PHASE_LABELS[activePhase] || activePhase, onRemove: () => setActivePhase(null) })
   if (activeEnergyHeating) activeFilters.push({ label: `Încălzire: ${activeEnergyHeating}`, onRemove: () => setActiveEnergyHeating(null) })
+  if (activeRefrigerant) activeFilters.push({ label: `Agent termic: ${activeRefrigerant}`, onRemove: () => setActiveRefrigerant(null) })
 
   const clearAll = useCallback(() => {
     setActiveSeries(null)
@@ -283,7 +281,7 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
     setActiveNoise(null)
     setActivePhase(null)
     setActiveEnergyHeating(null)
-    setSortBy('recommended')
+    setActiveRefrigerant(null)
   }, [])
 
   if (isAdvisorActive) {
@@ -320,17 +318,17 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
         <div className="flex flex-wrap items-center gap-2">
           {capacityOptions.length > 1 && (
             <FilterDropdown
-              label="Suprafață"
+              label="BTU / Suprafață"
               options={capacityOptions}
               active={activeCapacity}
               onSelect={setActiveCapacity}
-              renderLabel={getRoomLabel}
+              renderLabel={getBtuLabel}
             />
           )}
 
           {seriesOptions.length > 1 && (
             <FilterDropdown
-              label="Serie"
+              label="Model"
               options={seriesOptions}
               active={activeSeries}
               onSelect={setActiveSeries}
@@ -369,10 +367,21 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
           {/* Contextual filters — phase for heat pumps */}
           {(isPumpCategory || hasHeatPumps) && phaseOptions.length > 1 && (
             <FilterDropdown
-              label="Fază"
+              label="Tip alimentare"
               options={phaseOptions}
               active={activePhase}
               onSelect={setActivePhase}
+              renderLabel={(v) => PHASE_LABELS[v] || v}
+            />
+          )}
+
+          {/* Agent termic (refrigerant) */}
+          {refrigerantOptions.length > 1 && (
+            <FilterDropdown
+              label="Agent termic"
+              options={refrigerantOptions}
+              active={activeRefrigerant}
+              onSelect={setActiveRefrigerant}
             />
           )}
 
@@ -386,26 +395,9 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
             />
           )}
 
-          {/* Sort + reset pushed right */}
-          <div className="ml-auto flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <label htmlFor="sort-select" className="text-xs font-medium text-gray-400">
-                Sortare:
-              </label>
-              <select
-                id="sort-select"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as SortKey)}
-                className="rounded-lg border-0 bg-gray-50 py-1.5 pl-3 pr-8 text-sm font-medium text-gray-700 ring-1 ring-gray-200 focus:ring-2 focus:ring-sky-500"
-              >
-                {SORT_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            {activeFilters.length > 0 && (
+          {/* Reset pushed right */}
+          {activeFilters.length > 0 && (
+            <div className="ml-auto">
               <button
                 onClick={clearAll}
                 className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600"
@@ -415,8 +407,8 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Active chips row */}

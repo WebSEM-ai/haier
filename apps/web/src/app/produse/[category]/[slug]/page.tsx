@@ -86,7 +86,7 @@ function buildSpecSections(product: Product): SpecSection[] {
         {
           title: 'General',
           rows: [
-            { label: 'Agent frigorific', value: product.refrigerant },
+            { label: 'Agent termic', value: product.refrigerant },
             { label: 'Sarcină refrigerant', value: product.refrigerantCharge },
             { label: 'Alimentare', value: product.powerSupply },
             { label: 'Faze', value: product.phase },
@@ -142,7 +142,7 @@ function buildSpecSections(product: Product): SpecSection[] {
         {
           title: 'General',
           rows: [
-            { label: 'Agent frigorific', value: product.refrigerant },
+            { label: 'Agent termic', value: product.refrigerant },
             { label: 'Alimentare', value: product.powerSupply },
             { label: 'Garanție', value: product.warranty },
             { label: 'Fabricat în', value: product.madeIn },
@@ -195,6 +195,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   const isHeatPump = product.productType === 'heat-pump'
 
+  // Compute BTU from capacity
+  const capacityKw = product.capacity ? parseFloat(product.capacity) : null
+  const capacityBtu = capacityKw ? `~${Math.round(capacityKw * 3412 / 1000)},000 BTU/h` : null
+
   // Key specs for the right-side summary — different for AC vs heat pump
   const keySpecs = (
     isHeatPump
@@ -204,16 +208,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
           { label: 'SCOP @55°C', value: product.scopAt55 },
           { label: 'Clasă energetică @35°C', value: product.energyClassHeating35 },
           { label: 'Temp. max apă', value: product.maxWaterTemp },
-          { label: 'Agent frigorific', value: product.refrigerant },
-          { label: 'Faze', value: product.phase },
+          { label: 'Agent termic', value: product.refrigerant },
+          { label: 'Tip alimentare', value: product.phase },
           { label: 'Garanție', value: product.warranty },
         ]
       : [
+          { label: 'Putere BTU', value: capacityBtu },
           { label: 'Putere răcire', value: product.coolingCapacityNominal },
           { label: 'Putere încălzire', value: product.heatingCapacityNominal },
           { label: 'SEER', value: product.seer },
           { label: 'SCOP', value: product.scop },
-          { label: 'Agent frigorific', value: product.refrigerant },
+          { label: 'Agent termic', value: product.refrigerant },
           { label: 'Alimentare', value: product.powerSupply },
           { label: 'Garanție', value: product.warranty },
         ]

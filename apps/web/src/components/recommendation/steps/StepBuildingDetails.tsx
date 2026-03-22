@@ -81,7 +81,7 @@ export function StepBuildingDetails({ onSubmit }: StepBuildingDetailsProps) {
             <Tile
               selected={distribution === 'radiatoare'}
               onClick={() => setDistribution('radiatoare')}
-              title="Radiatoare / Fancoiluri"
+              title="Radiatoare / Ventiloconvectoare"
               subtitle="45-55°C temperatură apă"
             />
           </div>
@@ -138,7 +138,7 @@ export function StepBuildingDetails({ onSubmit }: StepBuildingDetailsProps) {
               selected={phase === 'tri'}
               onClick={() => setPhase('tri')}
               title="Trifazat"
-              subtitle="400V industrial"
+              subtitle="400V"
             />
           </div>
         </motion.div>

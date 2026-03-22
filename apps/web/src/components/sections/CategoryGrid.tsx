@@ -34,7 +34,7 @@ const showcaseCategories: ShowcaseCategory[] = [
     title: 'Climatizare',
     subtitle: 'Aer condiționat rezidențial',
     description:
-      'Gamă completă de climatizatoare cu inverter, de la 2.5 kW la 7.1 kW — echipate cu sterilizare UV-C, filtru IFD și control Wi-Fi.',
+      'Gamă completă de climatizatoare cu inverter, de la 9,000 la 24,000 BTU — echipate cu sterilizare UV-C, filtru IFD și control Wi-Fi.',
     image: '/images/categories/climatizare.png',
     imageAlt: 'Climatizare Haier unitate interioară',
     badges: [
@@ -43,7 +43,7 @@ const showcaseCategories: ShowcaseCategory[] = [
       { label: 'Wi-Fi', sub: 'Control inteligent' },
       { label: 'UV-C', sub: 'Sterilizare 99.9%' },
     ],
-    highlights: ['Inverter DC', 'Funcționare silențioasă de la 18 dB(A)', 'Garanție 5 ani'],
+    highlights: ['Inverter DC', 'Funcționare silențioasă de la 18 dB(A)', 'Garanție 36 luni'],
     series: [
       { label: 'Pearl Premium', href: '/produse/climatizare?series=pearl-premium' },
       { label: 'Revive Plus', href: '/produse/climatizare?series=revive-plus' },

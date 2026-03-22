@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 const trustItems = [
   {
     icon: '🛡️',
-    title: 'Garanție 5 ani',
-    description: 'Toate produsele beneficiază de garanție extinsă de 5 ani.',
+    title: 'Garanție 36 luni + 2 ani extra',
+    description: 'Garanție standard 36 luni, cu posibilitate de extindere +2 ani contra cost.',
   },
   {
     icon: '💬',

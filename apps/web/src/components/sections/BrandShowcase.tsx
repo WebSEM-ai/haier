@@ -34,19 +34,19 @@ const panels = [
   },
   {
     id: 'garantie',
-    tab: 'Garanție 5 ani',
+    tab: 'Garanție 36 luni',
     icon: (
       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
       </svg>
     ),
     subtitle: 'Fiabilitate garantată',
-    heading: 'Garanție extinsă\nde 5 ani',
+    heading: 'Garanție standard\n36 luni',
     body: (
       <>
         Utilizarea celor mai avansate tehnologii ne permite să oferim{' '}
-        <strong className="text-white">garanție completă de 5 ani</strong> pentru toate
-        sistemele de climatizare și pompele de căldură Haier — inclusiv piese de schimb gratuite.
+        <strong className="text-white">garanție standard de 36 luni</strong> pentru toate
+        sistemele de climatizare și pompele de căldură Haier, cu posibilitate de extindere cu 2 ani suplimentari contra cost.
       </>
     ),
     badge: 'Echipamente prietenoase cu mediul, confortabile și construite solid.',
@@ -57,7 +57,7 @@ const panels = [
       </svg>
     ),
     image: '/images/sections/grafika-gwarancja-pompa.webp',
-    imageAlt: 'Haier unitate exterioară cu garanție 5 ani',
+    imageAlt: 'Haier unitate exterioară cu garanție 36 luni',
     cta: { label: 'Garanție', href: '/contact' },
   },
 ]

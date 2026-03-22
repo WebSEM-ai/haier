@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useCallback } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { CategoryProductGrid } from './CategoryProductGrid'
 import { ProductAdvisor } from './ProductAdvisor'
 import type { Product } from '@/lib/payload'
@@ -56,24 +57,40 @@ interface AllProductsGridProps {
 }
 
 export function AllProductsGrid({ products }: AllProductsGridProps) {
+  const searchParams = useSearchParams()
+  const searchQuery = searchParams.get('q') || ''
   const [activeCategory, setActiveCategory] = useState('all')
   const [advisorResults, setAdvisorResults] = useState<ScoredProduct[] | null>(null)
 
+  // Search filter
+  const searchedProducts = useMemo(() => {
+    if (!searchQuery.trim()) return products
+    const q = searchQuery.toLowerCase().trim()
+    return products.filter((p) =>
+      p.title.toLowerCase().includes(q) ||
+      p.modelCode?.toLowerCase().includes(q) ||
+      p.series?.toLowerCase().includes(q) ||
+      p.shortDescription?.toLowerCase().includes(q) ||
+      p.capacity?.toLowerCase().includes(q)
+    )
+  }, [products, searchQuery])
+
   const filteredProducts = useMemo(() => {
-    if (activeCategory === 'all') return products
-    if (activeCategory === 'pompe-caldura') return products.filter(isHeatPump)
-    if (activeCategory === 'climatizare') return products.filter(isAC)
-    return products.filter((p) => p.categorySlug === activeCategory)
-  }, [products, activeCategory])
+    const base = searchedProducts
+    if (activeCategory === 'all') return base
+    if (activeCategory === 'pompe-caldura') return base.filter(isHeatPump)
+    if (activeCategory === 'climatizare') return base.filter(isAC)
+    return base.filter((p) => p.categorySlug === activeCategory)
+  }, [searchedProducts, activeCategory])
 
   const tabCount = useCallback(
     (key: string) => {
-      if (key === 'all') return products.length
-      if (key === 'pompe-caldura') return products.filter(isHeatPump).length
-      if (key === 'climatizare') return products.filter(isAC).length
-      return products.filter((p) => p.categorySlug === key).length
+      if (key === 'all') return searchedProducts.length
+      if (key === 'pompe-caldura') return searchedProducts.filter(isHeatPump).length
+      if (key === 'climatizare') return searchedProducts.filter(isAC).length
+      return searchedProducts.filter((p) => p.categorySlug === key).length
     },
-    [products],
+    [searchedProducts],
   )
 
   const handleAdvisorResults = useCallback((scored: ScoredProduct[]) => {
@@ -86,6 +103,15 @@ export function AllProductsGrid({ products }: AllProductsGridProps) {
 
   return (
     <div>
+      {/* Search results banner */}
+      {searchQuery && (
+        <div className="mb-6 flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-5 py-3">
+          <p className="text-sm text-gray-700">
+            Rezultate pentru <strong>&ldquo;{searchQuery}&rdquo;</strong> — {searchedProducts.length} {searchedProducts.length === 1 ? 'produs găsit' : 'produse găsite'}
+          </p>
+        </div>
+      )}
+
       {/* Product Advisor */}
       <ProductAdvisor
         products={products}
