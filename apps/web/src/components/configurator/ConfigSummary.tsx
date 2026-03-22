@@ -60,7 +60,7 @@ export function ConfigSummary({
 
     // Build configuration summary text
     const roomsSummary = rooms.map((r) =>
-      `${r.name}: ${r.area.toFixed(1)} m², ${r.thermalKw?.toFixed(2) || '?'} kW`
+      `${r.name}: ${(r.length * r.width).toFixed(1)} m², ${thermalResult.rooms?.find((tr) => tr.roomId === r.id)?.requiredKw.toFixed(2) || '?'} kW`
     ).join('\n')
     const productsSummary = selectedProducts.map((sp) =>
       `${sp.product.title} (${sp.product.capacity || sp.product.heatingCapacityNominal || ''})`
