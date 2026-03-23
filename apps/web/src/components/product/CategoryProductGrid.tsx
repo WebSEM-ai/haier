@@ -222,6 +222,38 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
     return Array.from(set).sort()
   }, [products])
 
+  // Derived: pump type from title/series (Split/Monobloc)
+  const getPumpType = useCallback((p: { title: string; series?: string | null }): string | null => {
+    const text = `${p.title} ${p.series || ''}`.toLowerCase()
+    if (text.includes('monobloc')) return 'Monobloc'
+    if (text.includes('split')) return 'Split'
+    return null
+  }, [])
+
+  const pumpTypeOptions = useMemo(() => {
+    const set = new Set<string>()
+    products.forEach((p) => {
+      const pt = getPumpType(p)
+      if (pt) set.add(pt)
+    })
+    return Array.from(set).sort()
+  }, [products, getPumpType])
+
+  const [activePumpType, setActivePumpType] = useState<string | null>(null)
+
+  // Derived: capacity in kW for heat pumps
+  const capacityKwOptions = useMemo(() => {
+    if (!isPumpCategory && !hasHeatPumps) return []
+    const set = new Set<string>()
+    products.forEach((p) => {
+      if (p.heatingCapacityNominal) set.add(p.heatingCapacityNominal)
+      else if (p.capacity) set.add(p.capacity)
+    })
+    return Array.from(set).sort((a, b) => parseFloat(a) - parseFloat(b))
+  }, [products, isPumpCategory, hasHeatPumps])
+
+  const [activeCapacityKw, setActiveCapacityKw] = useState<string | null>(null)
+
   const isAdvisorActive = !!(advisorResults && advisorResults.length > 0)
 
   const advisorProducts = useMemo(() => {
@@ -250,6 +282,11 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
       if (activePhase && p.phase !== activePhase) return false
       if (activeEnergyHeating && p.energyClassHeating !== activeEnergyHeating) return false
       if (activeRefrigerant && p.refrigerant !== activeRefrigerant) return false
+      if (activePumpType && getPumpType(p) !== activePumpType) return false
+      if (activeCapacityKw) {
+        const cap = p.heatingCapacityNominal || p.capacity
+        if (cap !== activeCapacityKw) return false
+      }
       return true
     })
 
@@ -261,7 +298,7 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
     })
 
     return result
-  }, [products, activeSeries, activeEnergy, activeCapacity, activeCompressor, activeNoise, activePhase, activeEnergyHeating, activeRefrigerant])
+  }, [products, activeSeries, activeEnergy, activeCapacity, activeCompressor, activeNoise, activePhase, activeEnergyHeating, activeRefrigerant, activePumpType, activeCapacityKw, getPumpType])
 
   const activeFilters: { label: string; onRemove: () => void }[] = []
   if (activeSeries) activeFilters.push({ label: activeSeries, onRemove: () => setActiveSeries(null) })
@@ -272,6 +309,8 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
   if (activePhase) activeFilters.push({ label: PHASE_LABELS[activePhase] || activePhase, onRemove: () => setActivePhase(null) })
   if (activeEnergyHeating) activeFilters.push({ label: `Încălzire: ${activeEnergyHeating}`, onRemove: () => setActiveEnergyHeating(null) })
   if (activeRefrigerant) activeFilters.push({ label: `Agent termic: ${activeRefrigerant}`, onRemove: () => setActiveRefrigerant(null) })
+  if (activePumpType) activeFilters.push({ label: `Tip: ${activePumpType}`, onRemove: () => setActivePumpType(null) })
+  if (activeCapacityKw) activeFilters.push({ label: `Putere: ${activeCapacityKw}`, onRemove: () => setActiveCapacityKw(null) })
 
   const clearAll = useCallback(() => {
     setActiveSeries(null)
@@ -282,6 +321,8 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
     setActivePhase(null)
     setActiveEnergyHeating(null)
     setActiveRefrigerant(null)
+    setActivePumpType(null)
+    setActiveCapacityKw(null)
   }, [])
 
   if (isAdvisorActive) {
@@ -382,6 +423,26 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
               options={refrigerantOptions}
               active={activeRefrigerant}
               onSelect={setActiveRefrigerant}
+            />
+          )}
+
+          {/* Tip pompă (derived from title) */}
+          {(isPumpCategory || hasHeatPumps) && pumpTypeOptions.length > 1 && (
+            <FilterDropdown
+              label="Tip pompă"
+              options={pumpTypeOptions}
+              active={activePumpType}
+              onSelect={setActivePumpType}
+            />
+          )}
+
+          {/* Putere kW for heat pumps */}
+          {(isPumpCategory || hasHeatPumps) && capacityKwOptions.length > 1 && (
+            <FilterDropdown
+              label="Putere kW"
+              options={capacityKwOptions}
+              active={activeCapacityKw}
+              onSelect={setActiveCapacityKw}
             />
           )}
 

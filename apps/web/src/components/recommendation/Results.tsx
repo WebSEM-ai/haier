@@ -101,8 +101,11 @@ export function Results({ results, onReset }: ResultsProps) {
               )}
 
               <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:p-8">
-                {/* Image */}
-                <div className="flex shrink-0 items-center justify-center sm:w-40">
+                {/* Image — clickable to product page */}
+                <Link
+                  href={`/produse/${item.product.categorySlug || 'climatizare'}/${item.product.slug}`}
+                  className="flex shrink-0 items-center justify-center transition-opacity hover:opacity-80 sm:w-40"
+                >
                   {imageUrl ? (
                     <Image
                       src={imageUrl}
@@ -118,7 +121,7 @@ export function Results({ results, onReset }: ResultsProps) {
                       </svg>
                     </div>
                   )}
-                </div>
+                </Link>
 
                 {/* Info */}
                 <div className="min-w-0 flex-1">

@@ -8,10 +8,10 @@ interface StepRoomSizeProps {
 }
 
 const options: { value: RoomSize; label: string; subtitle: string; badge: string }[] = [
-  { value: 'sub-25', label: 'Sub 25 m²', subtitle: 'Dormitor, birou', badge: '2.5 kW' },
-  { value: '25-35', label: '25 – 35 m²', subtitle: 'Living mic, cameră mare', badge: '3.5 kW' },
-  { value: '35-50', label: '35 – 50 m²', subtitle: 'Living, spațiu deschis', badge: '5.0 kW' },
-  { value: '50-70', label: '50 – 70 m²', subtitle: 'Living mare, open-space', badge: '7.0 kW' },
+  { value: 'sub-25', label: 'Sub 25 m²', subtitle: 'Dormitor, birou', badge: '~9,000 BTU' },
+  { value: '25-35', label: '25 – 35 m²', subtitle: 'Living mic, cameră mare', badge: '~12,000 BTU' },
+  { value: '35-50', label: '35 – 50 m²', subtitle: 'Living, spațiu deschis', badge: '~18,000 BTU' },
+  { value: '50-70', label: '50 – 70 m²', subtitle: 'Living mare, open-space', badge: '~24,000 BTU' },
 ]
 
 export function StepRoomSize({ onSelect }: StepRoomSizeProps) {

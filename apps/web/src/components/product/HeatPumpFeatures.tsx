@@ -23,7 +23,7 @@ const conveniences = [
 
 const features = [
   {
-    image: '/images/pompe-caldura/recuperare-caldura.webp',
+    image: '/images/sections/recuperare-caldura.webp',
     title: 'Recuperare de căldură',
     subtitle: 'Fără costuri suplimentare pentru apă caldă',
     description:

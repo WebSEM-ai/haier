@@ -76,7 +76,7 @@ export function StepBuildingDetails({ onSubmit }: StepBuildingDetailsProps) {
               selected={distribution === 'pardoseala'}
               onClick={() => setDistribution('pardoseala')}
               title="Încălzire în pardoseală"
-              subtitle="35-45°C temperatură apă"
+              subtitle="30-35°C temperatură apă"
             />
             <Tile
               selected={distribution === 'radiatoare'}
