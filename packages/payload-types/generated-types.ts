@@ -88,25 +88,30 @@ export interface Product {
   id: number;
   title: string;
   slug: string;
+  productType?: ('ac' | 'heat-pump') | null;
   /**
-   * Ex: Pearl Premium, Revive Plus, etc.
+   * Ex: Pearl Premium, Monobloc GT R290, etc.
    */
   series?: string | null;
   /**
-   * Ex: AS35PBPHRA-PRE1U35MEPFRA-PRE
+   * Ex: AS35PBPHRA-PRE / 1U35MEPFRA-PRE
    */
   modelCode: string;
   /**
-   * Ex: 3.5 kW, 10 kW mono, etc.
+   * Ex: 3.5 kW, 10 kW, etc.
    */
   capacity?: string | null;
   /**
-   * Slug-ul categoriei: climatizare, pompe-caldura, etc.
+   * Monofazat / Trifazat (doar pompe de căldură)
+   */
+  phase?: string | null;
+  /**
+   * Slug-ul categoriei: climatizare, pompe-de-caldura, etc.
    */
   categorySlug: string;
   shortDescription?: string | null;
   /**
-   * Numele fișierului din Media (ex: pearl-premium.webp)
+   * Numele fișierului din R2 (ex: pearl-premium.webp)
    */
   mainImageFilename?: string | null;
   coolingCapacityNominal?: string | null;
@@ -123,6 +128,17 @@ export interface Product {
   scop?: string | null;
   cop?: string | null;
   energyClassHeating?: ('A+++' | 'A++' | 'A+' | 'A' | 'B' | 'C' | 'D') | null;
+  scopAt35?: string | null;
+  scopAt55?: string | null;
+  maxWaterTemp?: string | null;
+  energyClassHeating35?: ('A+++' | 'A++' | 'A+' | 'A' | 'B' | 'C' | 'D') | null;
+  energyClassHeating55?: ('A+++' | 'A++' | 'A+' | 'A' | 'B' | 'C' | 'D') | null;
+  refrigerantCharge?: string | null;
+  operatingRangeMin?: string | null;
+  operatingRangeMax?: string | null;
+  soundPowerLevel?: string | null;
+  unitDimensions?: string | null;
+  unitWeight?: string | null;
   indoorDimensions?: string | null;
   indoorWeight?: string | null;
   indoorNoiseMax?: string | null;
@@ -311,9 +327,11 @@ export interface UsersSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  productType?: T;
   series?: T;
   modelCode?: T;
   capacity?: T;
+  phase?: T;
   categorySlug?: T;
   shortDescription?: T;
   mainImageFilename?: T;
@@ -331,6 +349,17 @@ export interface ProductsSelect<T extends boolean = true> {
   scop?: T;
   cop?: T;
   energyClassHeating?: T;
+  scopAt35?: T;
+  scopAt55?: T;
+  maxWaterTemp?: T;
+  energyClassHeating35?: T;
+  energyClassHeating55?: T;
+  refrigerantCharge?: T;
+  operatingRangeMin?: T;
+  operatingRangeMax?: T;
+  soundPowerLevel?: T;
+  unitDimensions?: T;
+  unitWeight?: T;
   indoorDimensions?: T;
   indoorWeight?: T;
   indoorNoiseMax?: T;

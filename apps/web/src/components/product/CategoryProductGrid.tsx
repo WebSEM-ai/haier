@@ -241,6 +241,25 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
 
   const [activePumpType, setActivePumpType] = useState<string | null>(null)
 
+  // Derived: boiler volume from title/shortDescription
+  const getBoilerVolume = useCallback((p: { title: string; shortDescription?: string | null }): string | null => {
+    const text = `${p.title} ${p.shortDescription || ''}`.toLowerCase()
+    if (text.includes('240l') || text.includes('240 l')) return '240L'
+    if (text.includes('160l') || text.includes('160 l')) return '160L'
+    return null
+  }, [])
+
+  const boilerVolumeOptions = useMemo(() => {
+    const set = new Set<string>()
+    products.forEach((p) => {
+      const vol = getBoilerVolume(p)
+      if (vol) set.add(vol)
+    })
+    return Array.from(set).sort()
+  }, [products, getBoilerVolume])
+
+  const [activeBoilerVolume, setActiveBoilerVolume] = useState<string | null>(null)
+
   // Derived: capacity in kW for heat pumps
   const capacityKwOptions = useMemo(() => {
     if (!isPumpCategory && !hasHeatPumps) return []
@@ -283,6 +302,7 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
       if (activeEnergyHeating && p.energyClassHeating !== activeEnergyHeating) return false
       if (activeRefrigerant && p.refrigerant !== activeRefrigerant) return false
       if (activePumpType && getPumpType(p) !== activePumpType) return false
+      if (activeBoilerVolume && getBoilerVolume(p) !== activeBoilerVolume) return false
       if (activeCapacityKw) {
         const cap = p.heatingCapacityNominal || p.capacity
         if (cap !== activeCapacityKw) return false
@@ -298,7 +318,7 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
     })
 
     return result
-  }, [products, activeSeries, activeEnergy, activeCapacity, activeCompressor, activeNoise, activePhase, activeEnergyHeating, activeRefrigerant, activePumpType, activeCapacityKw, getPumpType])
+  }, [products, activeSeries, activeEnergy, activeCapacity, activeCompressor, activeNoise, activePhase, activeEnergyHeating, activeRefrigerant, activePumpType, activeCapacityKw, activeBoilerVolume, getPumpType, getBoilerVolume])
 
   const activeFilters: { label: string; onRemove: () => void }[] = []
   if (activeSeries) activeFilters.push({ label: activeSeries, onRemove: () => setActiveSeries(null) })
@@ -310,6 +330,7 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
   if (activeEnergyHeating) activeFilters.push({ label: `Încălzire: ${activeEnergyHeating}`, onRemove: () => setActiveEnergyHeating(null) })
   if (activeRefrigerant) activeFilters.push({ label: `Agent termic: ${activeRefrigerant}`, onRemove: () => setActiveRefrigerant(null) })
   if (activePumpType) activeFilters.push({ label: `Tip: ${activePumpType}`, onRemove: () => setActivePumpType(null) })
+  if (activeBoilerVolume) activeFilters.push({ label: `Boiler: ${activeBoilerVolume}`, onRemove: () => setActiveBoilerVolume(null) })
   if (activeCapacityKw) activeFilters.push({ label: `Putere: ${activeCapacityKw}`, onRemove: () => setActiveCapacityKw(null) })
 
   const clearAll = useCallback(() => {
@@ -322,6 +343,7 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
     setActiveEnergyHeating(null)
     setActiveRefrigerant(null)
     setActivePumpType(null)
+    setActiveBoilerVolume(null)
     setActiveCapacityKw(null)
   }, [])
 
@@ -433,6 +455,16 @@ export function CategoryProductGrid({ products, advisorResults, activeCategory }
               options={pumpTypeOptions}
               active={activePumpType}
               onSelect={setActivePumpType}
+            />
+          )}
+
+          {/* Volum boiler */}
+          {(isPumpCategory || hasHeatPumps) && boilerVolumeOptions.length > 1 && (
+            <FilterDropdown
+              label="Volum boiler"
+              options={boilerVolumeOptions}
+              active={activeBoilerVolume}
+              onSelect={setActiveBoilerVolume}
             />
           )}
 

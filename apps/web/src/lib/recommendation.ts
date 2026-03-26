@@ -236,7 +236,7 @@ function scoreFeatures(product: Product, weight: number): { score: number; reaso
 
 function scoreSeries(product: Product, weight: number): { score: number; reason: string | null } {
   const series = product.series?.toLowerCase() || ''
-  const premiumSeries = ['pearl premium', 'pearl plus']
+  const premiumSeries = ['pearl premium', 'pearl plus', 'expert']
   const isPremium = premiumSeries.some((s) => series.includes(s))
 
   if (isPremium) {

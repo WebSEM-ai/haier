@@ -153,7 +153,7 @@ export function StepRoomConfig({
             }`}
           >
             {room.name}
-            <span className="text-xs opacity-60">{Math.round(room.length * room.width)} m²</span>
+            <span className="text-sm opacity-70">{Math.round(room.length * room.width)} m²</span>
             {rooms.length > 1 && (
               <button
                 onClick={(e) => { e.stopPropagation(); removeRoom(i) }}
@@ -202,10 +202,10 @@ export function StepRoomConfig({
                     updateRoom('length', p.defaultLength)
                     updateRoom('width', p.defaultWidth)
                   }}
-                  className={`rounded-lg px-3 py-2 text-xs font-medium transition-all ${
+                  className={`rounded-lg px-3.5 py-2 text-sm font-medium transition-all ${
                     activeRoom.preset === opt.value
                       ? 'bg-sky-500/15 text-sky-400 ring-1 ring-sky-500/30'
-                      : 'bg-white/5 text-gray-400 ring-1 ring-white/10 hover:bg-white/10 hover:text-white'
+                      : 'bg-white/5 text-gray-300 ring-1 ring-white/10 hover:bg-white/10 hover:text-white'
                   }`}
                 >
                   {opt.label}
@@ -258,7 +258,7 @@ export function StepRoomConfig({
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 8.25V18a2.25 2.25 0 002.25 2.25h13.5A2.25 2.25 0 0021 18V8.25m-18 0V6a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 6v2.25m-18 0h18M12 3.75v16.5" />
                     </svg>
                   </span>
-                  <span className="text-sm text-gray-300">Ferestre</span>
+                  <span className="text-sm font-medium text-gray-300">Ferestre</span>
                 </div>
                 <CounterControl
                   value={activeRoom.windows}
@@ -450,7 +450,7 @@ export function StepRoomConfig({
 function ConfigSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-      <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-500">{title}</h3>
+      <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-300">{title}</h3>
       {children}
     </div>
   )
@@ -478,7 +478,7 @@ function SliderField({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-sm text-gray-400">{label}</span>
+        <span className="text-sm font-medium text-gray-300">{label}</span>
         <span className="font-display text-lg font-bold text-white">
           {value} <span className="text-sm font-normal text-gray-500">{unit}</span>
         </span>
@@ -496,7 +496,7 @@ function SliderField({
           height: '8px',
         }}
       />
-      <div className="mt-1 flex justify-between text-[10px] text-gray-600">
+      <div className="mt-1 flex justify-between text-xs text-gray-500">
         <span>{min}{unit}</span>
         <span>{max}{unit}</span>
       </div>

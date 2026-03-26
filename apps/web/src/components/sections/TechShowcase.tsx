@@ -13,7 +13,7 @@ const slides = [
     subtitle: 'Tehnologie de ultimă generație',
     image: '/images/sectiuni/schema-unitate-interioara.jpg',
     imageAlt: 'Schemă tehnică unitate interioară aer condiționat Haier',
-    series: ['Revive Plus', 'Pearl', 'Flexis Plus', 'Tide Green Plus'],
+    series: ['Pearl Premium', 'Expert', 'Revive Plus', 'Flexis Plus', 'Tide Green Plus'],
     highlights: [
       { label: 'Super silențios', value: '15 dB(A)' },
       { label: 'Refrigerant ecologic', value: 'R32' },
@@ -35,7 +35,7 @@ const slides = [
     subtitle: 'Eficiență maximă, impact minim',
     image: '/images/sectiuni/schema-unitate-exterioara.jpg',
     imageAlt: 'Schemă tehnică unitate exterioară pompa de căldură Haier',
-    series: ['Super Aqua', 'ThermaFlex', 'AU082FYCRA(HW)'],
+    series: ['Monobloc GT R290', 'Hydro All-in-One R290'],
     highlights: [
       { label: 'Refrigerant natural', value: 'R290' },
       { label: 'Compresor', value: 'Inverter avansat' },

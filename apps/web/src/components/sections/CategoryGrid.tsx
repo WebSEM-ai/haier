@@ -46,6 +46,7 @@ const showcaseCategories: ShowcaseCategory[] = [
     highlights: ['Inverter DC', 'Funcționare silențioasă de la 18 dB(A)', 'Garanție 36 luni'],
     series: [
       { label: 'Pearl Premium', href: '/produse/climatizare?series=pearl-premium' },
+      { label: 'Expert', href: '/produse/climatizare?series=expert' },
       { label: 'Revive Plus', href: '/produse/climatizare?series=revive-plus' },
     ],
     icon: (
