@@ -323,11 +323,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
             {/* Key specs — compact table */}
             {keySpecs.length > 0 && (
-              <dl className="mt-6 divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white shadow-sm">
-                {keySpecs.map((spec) => (
-                  <div key={spec.label} className="flex items-center justify-between px-5 py-3.5">
-                    <dt className="text-base font-medium text-gray-700">{spec.label}</dt>
-                    <dd className="text-lg font-bold text-gray-900">{spec.value}</dd>
+              <dl className="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+                {keySpecs.map((spec, i) => (
+                  <div
+                    key={spec.label}
+                    className={`flex items-center justify-between px-5 py-4 ${
+                      i % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                    }`}
+                  >
+                    <dt className="text-sm font-semibold uppercase tracking-wide text-gray-500">{spec.label}</dt>
+                    <dd className="text-right text-lg font-extrabold text-gray-900">{spec.value}</dd>
                   </div>
                 ))}
               </dl>
