@@ -62,7 +62,7 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
   const [scoredProducts, setScoredProducts] = useState<ScoredProduct[]>([])
   const [selectedProducts, setSelectedProducts] = useState<ScoredProduct[]>([])
 
-  // Restore saved rooms from localStorage
+  // Restore saved state from localStorage (rooms + step)
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
@@ -71,6 +71,10 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
         if (data.rooms?.length) setRooms(data.rooms)
         if (data.spaceType) setSpaceType(data.spaceType)
         if (data.productType) setProductTypeChoice(data.productType)
+        // Restore to room-config step if we have saved rooms
+        if (data.rooms?.length && data.spaceType) {
+          setStep('room-config')
+        }
       }
     } catch { /* ignore */ }
   }, [])

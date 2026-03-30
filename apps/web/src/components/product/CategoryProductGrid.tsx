@@ -18,11 +18,11 @@ function kwToBtu(kw: number): number {
 function getBtuLabel(capacity: string): string {
   const kw = parseFloat(capacity)
   const btu = kwToBtu(kw)
-  if (kw <= 2.5) return `~${(btu / 1000).toFixed(0)},000 BTU · <25 m²`
-  if (kw <= 3.5) return `~${(btu / 1000).toFixed(0)},000 BTU · 25-35 m²`
-  if (kw <= 5.0) return `~${(btu / 1000).toFixed(0)},000 BTU · 35-50 m²`
-  if (kw <= 7.1) return `~${(btu / 1000).toFixed(0)},000 BTU · 50-70 m²`
-  return `~${(btu / 1000).toFixed(0)},000 BTU · ~${Math.round(kw * 10)} m²`
+  if (kw <= 2.5) return `~${(btu / 1000).toFixed(0)}.000 BTU · <25 m²`
+  if (kw <= 3.5) return `~${(btu / 1000).toFixed(0)}.000 BTU · 25-35 m²`
+  if (kw <= 5.0) return `~${(btu / 1000).toFixed(0)}.000 BTU · 35-50 m²`
+  if (kw <= 7.1) return `~${(btu / 1000).toFixed(0)}.000 BTU · 50-70 m²`
+  return `~${(btu / 1000).toFixed(0)}.000 BTU · ~${Math.round(kw * 10)} m²`
 }
 
 const PHASE_LABELS: Record<string, string> = {

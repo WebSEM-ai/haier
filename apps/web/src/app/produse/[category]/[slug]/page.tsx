@@ -198,7 +198,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   // Compute BTU from capacity
   const capacityKw = product.capacity ? parseFloat(product.capacity) : null
-  const capacityBtu = capacityKw ? `~${Math.round(capacityKw * 3412 / 1000)},000 BTU/h` : null
+  const capacityBtu = capacityKw ? `~${Math.round(capacityKw * 3412 / 1000)}.000 BTU/h` : null
 
   // Key specs for the right-side summary — different for AC vs heat pump
   const keySpecs = (
@@ -316,9 +316,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
             {keySpecs.length > 0 && (
               <dl className="mt-6 divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white shadow-sm">
                 {keySpecs.map((spec) => (
-                  <div key={spec.label} className="flex items-center justify-between px-5 py-3">
-                    <dt className="text-base text-gray-600">{spec.label}</dt>
-                    <dd className="text-base font-bold text-gray-900">{spec.value}</dd>
+                  <div key={spec.label} className="flex items-center justify-between px-5 py-3.5">
+                    <dt className="text-base font-medium text-gray-700">{spec.label}</dt>
+                    <dd className="text-lg font-bold text-gray-900">{spec.value}</dd>
                   </div>
                 ))}
               </dl>

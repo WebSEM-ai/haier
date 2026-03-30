@@ -34,7 +34,7 @@ const showcaseCategories: ShowcaseCategory[] = [
     title: 'Climatizare',
     subtitle: 'Aer condiționat rezidențial',
     description:
-      'Gamă completă de climatizatoare cu inverter, de la 9,000 la 24,000 BTU — echipate cu sterilizare UV-C, filtru IFD și control Wi-Fi.',
+      'Gamă completă de climatizatoare cu inverter, de la 9,000 la 24.000 BTU — echipate cu sterilizare UV-C, filtru IFD și control Wi-Fi.',
     image: '/images/categories/climatizare.png',
     imageAlt: 'Climatizare Haier unitate interioară',
     badges: [
