@@ -6,7 +6,7 @@ export const R2_PUBLIC_URL = 'https://pub-3013ff0157c24567adca9dab49d95319.r2.de
 
 export const CONTACT = {
   phone: '0376 448 475',
-  email: 'contact@haier.ro',
+  email: 'contact@haier-ac.ro',
   locations: [
     { name: 'Sediu Cluj-Napoca', address: 'Strada Fabricii 105, Etajul 5, Cluj-Napoca' },
     { name: 'Depozit Luna', address: 'Strada Mihai Eminescu 454, Luna de Sus, Comuna Florești' },
