@@ -199,30 +199,30 @@ export function Results({ results, onReset }: ResultsProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 + results.length * 0.1 }}
-          className="mt-10 overflow-x-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm"
+          className="mt-10 overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.07] backdrop-blur-sm"
         >
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10">
-                <th className="p-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <tr className="border-b border-white/15 bg-white/[0.05]">
+                <th className="p-5 text-left text-xs font-bold uppercase tracking-wider text-sky-400">
                   Specificație
                 </th>
                 {results.map((item) => (
-                  <th key={item.product.id} className="p-4 text-center text-xs font-semibold text-white">
+                  <th key={item.product.id} className="p-5 text-center text-sm font-bold text-white">
                     {item.product.title}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
-              <ComparisonRow label="Scor" values={results.map((r) => `${r.score}%`)} />
+            <tbody className="divide-y divide-white/10">
+              <ComparisonRow label="Scor" values={results.map((r) => `${r.score}%`)} highlight />
               <ComparisonRow label="Capacitate" values={results.map((r) => r.product.capacity || '—')} />
               <ComparisonRow label="SEER" values={results.map((r) => r.product.seer || '—')} />
               <ComparisonRow label="SCOP" values={results.map((r) => r.product.scop || r.product.scopAt35 || '—')} />
               <ComparisonRow label="Clasă răcire" values={results.map((r) => r.product.energyClassCooling || '—')} />
               <ComparisonRow label="Clasă încălzire" values={results.map((r) => r.product.energyClassHeating || '—')} />
               <ComparisonRow label="Zgomot interior" values={results.map((r) => r.product.indoorNoiseMax || r.product.soundPowerLevel || '—')} />
-              <ComparisonRow label="Model" values={results.map((r) => r.product.series || '—')} />
+              <ComparisonRow label="Serie" values={results.map((r) => r.product.series || '—')} />
             </tbody>
           </table>
         </motion.div>
@@ -249,12 +249,14 @@ export function Results({ results, onReset }: ResultsProps) {
   )
 }
 
-function ComparisonRow({ label, values }: { label: string; values: string[] }) {
+function ComparisonRow({ label, values, highlight }: { label: string; values: string[]; highlight?: boolean }) {
   return (
-    <tr>
-      <td className="p-4 text-xs font-medium text-gray-500">{label}</td>
+    <tr className="transition-colors hover:bg-white/[0.04]">
+      <td className="p-5 text-sm font-semibold text-gray-300">{label}</td>
       {values.map((v, i) => (
-        <td key={i} className="p-4 text-center text-gray-300">{v}</td>
+        <td key={i} className={`p-5 text-center text-base font-bold ${highlight ? 'text-sky-400' : 'text-white'}`}>
+          {v}
+        </td>
       ))}
     </tr>
   )
