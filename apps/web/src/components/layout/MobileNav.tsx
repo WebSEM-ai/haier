@@ -113,7 +113,7 @@ export function MobileNav({ categories }: MobileNavProps) {
                 onClick={() => setOpen(false)}
                 className="block w-full rounded-lg bg-sky-600 px-4 py-3 text-center font-medium text-white hover:bg-sky-700"
               >
-                Cere ofertă
+                Solicită ofertă
               </Link>
             </div>
           </nav>

@@ -159,6 +159,15 @@ function buildSpecSections(product: Product): SpecSection[] {
     .filter((s) => s.rows.length > 0)
 }
 
+/* ─── Format BTU in title (e.g. "9000BTU" → "9.000 BTU") ─── */
+
+function formatTitle(title: string): string {
+  return title.replace(/(\d+)(BTU)/gi, (_, num, btu) => {
+    const formatted = Number(num).toLocaleString('ro-RO')
+    return `${formatted} ${btu.toUpperCase()}`
+  })
+}
+
 /* ─── Page ─── */
 
 interface ProductPageProps {
@@ -251,7 +260,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </>
             )}
             <li>/</li>
-            <li className="truncate max-w-[200px] text-gray-900">{product.title}</li>
+            <li className="truncate max-w-[200px] text-gray-900">{formatTitle(product.title)}</li>
           </ol>
         </nav>
 
@@ -280,7 +289,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </p>
             )}
 
-            <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">{product.title}</h1>
+            <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">{formatTitle(product.title)}</h1>
             <p className="mt-2 text-sm text-gray-400">Cod: {product.modelCode}</p>
 
             {/* Energy labels */}

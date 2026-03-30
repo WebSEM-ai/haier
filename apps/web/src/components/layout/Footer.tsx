@@ -78,7 +78,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/cerere-oferta" className="text-sm text-gray-400 transition-colors hover:text-sky-400">
-                  Cerere ofertă
+                  Solicită ofertă
                 </Link>
               </li>
             </ul>

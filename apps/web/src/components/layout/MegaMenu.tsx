@@ -265,7 +265,7 @@ export function MegaMenuPanel({ section, onMouseEnter, onMouseLeave }: MegaMenuP
                 href="/cerere-oferta"
                 className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 py-2.5 text-sm font-medium text-gray-400 transition-all hover:border-white/20 hover:text-white"
               >
-                Cere ofertă
+                Solicită ofertă
                 <svg
                   className="h-3.5 w-3.5"
                   fill="none"

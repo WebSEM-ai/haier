@@ -21,6 +21,13 @@ interface ProductCardProps {
   index?: number
 }
 
+function formatTitle(title: string): string {
+  return title.replace(/(\d+)(BTU)/gi, (_, num, btu) => {
+    const formatted = Number(num).toLocaleString('ro-RO')
+    return `${formatted} ${btu.toUpperCase()}`
+  })
+}
+
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const categorySlug = product.categorySlug || 'produse'
   const imageUrl = product.mainImageFilename
@@ -82,7 +89,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           </div>
 
           <h3 className="font-semibold text-gray-900 line-clamp-2 transition-colors group-hover:text-sky-600">
-            {product.title}
+            {formatTitle(product.title)}
           </h3>
 
           {product.shortDescription && (
